@@ -1,5 +1,4 @@
 import React, {Component}                   from 'react';
-import './App.css';
 import DefaultFrame                                from "./containers/common/DefaultFrame";
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 

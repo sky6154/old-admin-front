@@ -9,7 +9,7 @@ class Routing extends React.Component {
       <Switch>
             {/*<Route path="/noAuth" component={NoAuthorization} />*/}
         <Route exact path="/" component={Main} />
-        {/*<Route exact path="/document" component={DocumentManage} />*/}
+        <Route exact path="/document" component={DocumentManage} />
       </Switch>
     );
   }

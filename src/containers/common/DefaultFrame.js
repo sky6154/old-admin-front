@@ -5,19 +5,14 @@ import {withStyles}     from '@material-ui/core/styles';
 import Drawer           from '@material-ui/core/Drawer';
 import AppBar           from '@material-ui/core/AppBar';
 import Toolbar          from '@material-ui/core/Toolbar';
-import List             from '@material-ui/core/List';
 import Typography       from '@material-ui/core/Typography';
 import Divider          from '@material-ui/core/Divider';
 import IconButton       from '@material-ui/core/IconButton';
 import MenuIcon         from '@material-ui/icons/Menu';
 import ChevronLeftIcon  from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-
-import InboxIcon                              from '@material-ui/icons/MoveToInbox';
-import MailIcon                               from '@material-ui/icons/Mail';
-import {ListItem, ListItemIcon, ListItemText} from "@material-ui/core/es/index";
-import Routing                                from "../../Routing";
-import Menu                                   from "../Menu";
+import Routing          from "../../Routing";
+import Menu             from "../Menu";
 
 
 const drawerWidth = 240;
@@ -27,12 +22,12 @@ const styles = theme => ({
     flexGrow: 1,
   },
   appDefaultFrame: {
-    height: 430,
+    height: '100vh',
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
     display: 'flex',
-    width: '100%',
+    width: '100%'
   },
   appBar: {
     position: 'absolute',
@@ -131,8 +126,6 @@ class DefaultFrame extends React.Component {
         </div>
         <Divider />
         <Menu />
-
-
       </Drawer>
     );
 
