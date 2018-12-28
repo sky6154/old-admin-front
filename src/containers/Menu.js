@@ -72,7 +72,7 @@ class Menu extends React.Component {
             <ListItem button key={"게시글 관리"} className={classes.nested}>
               <ListItemIcon><AssignmentIcon /></ListItemIcon>
               <ListItemText inset primary={"테스트"} onClick={() =>{
-                this.goTo("/user")
+                this.goTo("/document");
               }} />
             </ListItem>
           </List>
@@ -89,13 +89,13 @@ class Menu extends React.Component {
             <ListItem button className={classes.nested}>
               <ListItemIcon><FaceIcon /></ListItemIcon>
               <ListItemText inset primary={"운영자 관리"} onClick={() =>{
-                this.goTo("/user")
+                this.goTo("/user");
               }} />
             </ListItem>
             <ListItem button className={classes.nested}>
               <ListItemIcon><AccessTimeIcon /></ListItemIcon>
               <ListItemText inset primary={"운영자 로그"} onClick={() =>{
-                this.goTo("/user")
+                this.goTo("/user");
               }} />
             </ListItem>
           </List>

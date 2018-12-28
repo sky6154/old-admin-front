@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.16.2",
+    "draft-js": "^0.10.5",
     "draft-js-plugins-editor": "^2.1.1",
     "draft-js-emoji-plugin": "^2.1.1",
     "draft-js-image-plugin": "^2.0.6",
