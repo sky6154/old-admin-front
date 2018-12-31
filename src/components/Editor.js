@@ -39,6 +39,7 @@ import {
   AtomicBlockUtils,
   convertFromRaw,
   EditorState,
+  convertToRaw,
 } from 'draft-js';
 
 import ReactFileReader from 'react-file-reader';
@@ -102,6 +103,18 @@ export default class MyEditor extends Component {
     return AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' ');
   };
 
+  handleSubmit = () => {
+    const content = this.state.editorState.getCurrentContent();
+    const dataToSaveBackend = convertToRaw(content);
+
+    console.log(content);
+
+    console.log(dataToSaveBackend);
+
+    // Do Submit !
+    // Draft.js 형식의 obj로 떨어지는데 DB에 어떻게 저장해야 할지 고민해야할듯
+  };
+
   onChange = (editorState) =>{
     this.setState({
       editorState,
@@ -161,6 +174,9 @@ export default class MyEditor extends Component {
               <button className={"addImageButton"} style={{width: "100px"}}>Upload</button>
             </ReactFileReader>
           </div>
+        </div>
+        <div style={{float:"right"}} className={"addImage"} >
+          <button className={"addImageButton"} style={{width: "100px"}} onClick={this.handleSubmit}>Submit</button>
         </div>
       </div>
     );
