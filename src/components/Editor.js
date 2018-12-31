@@ -20,18 +20,28 @@ import {
   OrderedListButton,
   BlockquoteButton,
   CodeBlockButton,
-  AlignBlockDefaultButton,
-  AlignBlockCenterButton,
-  AlignBlockLeftButton,
-  AlignBlockRightButton
+  // AlignBlockDefaultButton,
+  // AlignBlockCenterButton,
+  // AlignBlockLeftButton,
+  // AlignBlockRightButton
 }                                                             from 'draft-js-buttons';
 
 
 import 'draft-js-emoji-plugin/lib/plugin.css';
 import 'draft-js-static-toolbar-plugin/lib/plugin.css';
 import 'draft-js-image-plugin/lib/plugin.css';
+import 'draft-js-focus-plugin/lib/plugin.css';
+import 'draft-js-alignment-plugin/lib/plugin.css';
+
 import './css/Editor.css';
 import {ImageAddButton}                                       from "./EditorImageAddButton";
+import {
+  AtomicBlockUtils,
+  convertFromRaw,
+  EditorState,
+} from 'draft-js';
+
+import ReactFileReader from 'react-file-reader';
 
 const emojiPlugin = createEmojiPlugin();
 const focusPlugin = createFocusPlugin();
@@ -63,10 +73,33 @@ const plugins = [
   staticToolbarPlugin
 ];
 
-
-export default class SimpleEmojiEditor extends Component {
+export default class MyEditor extends Component {
   state = {
-    editorState: createEditorStateWithText(''),
+    editorState: EditorState.createEmpty()
+  };
+
+  handleFiles = files =>{
+    console.log(files);
+
+    const base64 = files.base64;
+    const newEditorState = this.insertImageToEditor(this.state.editorState, base64);
+
+    this.setState({ editorState: newEditorState });
+  };
+
+  insertImageToEditor = (editorState, base64) =>{
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      'image',
+      'IMMUTABLE',
+      {src: base64},
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(
+      editorState,
+      {currentContent: contentStateWithEntity},
+    );
+    return AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' ');
   };
 
   onChange = (editorState) =>{
@@ -97,10 +130,10 @@ export default class SimpleEmojiEditor extends Component {
                   <OrderedListButton {...externalProps} />
                   <BlockquoteButton {...externalProps} />
                   <CodeBlockButton {...externalProps} />
-                  <AlignBlockDefaultButton {...externalProps} />
-                  <AlignBlockCenterButton {...externalProps} />
-                  <AlignBlockLeftButton {...externalProps} />
-                  <AlignBlockRightButton {...externalProps} />
+                  {/*<AlignBlockDefaultButton {...externalProps} />*/}
+                  {/*<AlignBlockCenterButton {...externalProps} />*/}
+                  {/*<AlignBlockLeftButton {...externalProps} />*/}
+                  {/*<AlignBlockRightButton {...externalProps} />*/}
                 </div>
               )
             }
@@ -114,6 +147,7 @@ export default class SimpleEmojiEditor extends Component {
               this.editor = element;
             }}
           />
+          <AlignmentTool />
           <EmojiSuggestions />
         </div>
         <div className={"options"}>
@@ -121,6 +155,12 @@ export default class SimpleEmojiEditor extends Component {
           <ImageAddButton editorState={this.state.editorState}
                           onChange={this.onChange}
                           modifier={imagePlugin.addImage} />
+          <div style={{display: "inline-block"}} className={"addImage"}>
+            <ReactFileReader fileTypes={[".jpg", ".jpeg", ".png"]} base64={true} handleFiles={this.handleFiles}
+                             multipleFiles={false}>
+              <button className={"addImageButton"} style={{width: "100px"}}>Upload</button>
+            </ReactFileReader>
+          </div>
         </div>
       </div>
     );
