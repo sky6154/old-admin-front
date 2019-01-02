@@ -43,6 +43,7 @@ import {
 } from 'draft-js';
 
 import ReactFileReader from 'react-file-reader';
+import {stateToHTML} from 'draft-js-export-html';
 
 const emojiPlugin = createEmojiPlugin();
 const focusPlugin = createFocusPlugin();
@@ -109,10 +110,13 @@ export default class MyEditor extends Component {
 
     console.log(content);
 
+    // image는 빼서 base64대신 replace 후
     console.log(dataToSaveBackend);
 
-    // Do Submit !
-    // Draft.js 형식의 obj로 떨어지는데 DB에 어떻게 저장해야 할지 고민해야할듯
+    // HTML로 변환
+    console.log(stateToHTML(this.state.editorState.getCurrentContent()));
+
+    // 변환된 이미지 주소로 replace 된 HTML을 DB에 넣자
   };
 
   onChange = (editorState) =>{
