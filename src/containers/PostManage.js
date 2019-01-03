@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import MyEditor  from "../components/Editor";
 
-class DocumentManage extends Component {
+class PostManage extends Component {
   render(){
     return (
       <div>
@@ -12,4 +12,4 @@ class DocumentManage extends Component {
 }
 
 
-export default DocumentManage;
+export default PostManage;

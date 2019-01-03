@@ -31,15 +31,15 @@ class Menu extends React.Component {
   }
 
   state = {
-    isDocumentFoldOpen : false,
+    isPostFoldOpen : false,
     isAdminFoldingOpen: false,
     isMyFoldingOpen : false
   };
 
   handleClick = target =>{
     switch(target){
-      case "document":
-        this.setState(state => ({isDocumentFoldOpen: !state.isDocumentFoldOpen}));
+      case "post":
+        this.setState(state => ({isPostFoldOpen: !state.isPostFoldOpen}));
         break;
       case "admin":
         this.setState(state => ({isAdminFoldingOpen: !state.isAdminFoldingOpen}));
@@ -61,18 +61,18 @@ class Menu extends React.Component {
         component="nav"
         subheader={<ListSubheader component="div">Develobeer 관리 메뉴</ListSubheader>}
       >
-        <ListItem button onClick={() => this.handleClick("document")}>
+        <ListItem button onClick={() => this.handleClick("post")}>
           <ListItemIcon><AssignmentIcon /></ListItemIcon>
           <ListItemText inset primary={"게시글 관리"} />
-          {this.state.isDocumentFoldOpen ? <ExpandLess /> : <ExpandMore />}
+          {this.state.isPostFoldOpen ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
 
-        <Collapse in={this.state.isDocumentFoldOpen} timeout="auto" unmountOnExit>
+        <Collapse in={this.state.isPostFoldOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem button key={"게시글 관리"} className={classes.nested}>
               <ListItemIcon><AssignmentIcon /></ListItemIcon>
               <ListItemText inset primary={"테스트"} onClick={() =>{
-                this.goTo("/document");
+                this.goTo("/post");
               }} />
             </ListItem>
           </List>

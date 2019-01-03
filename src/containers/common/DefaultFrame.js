@@ -13,6 +13,10 @@ import ChevronLeftIcon  from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Routing          from "../../Routing";
 import Menu             from "../Menu";
+import Alert from 'react-s-alert';
+
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 
 
 const drawerWidth = 240;
@@ -163,6 +167,8 @@ class DefaultFrame extends React.Component {
             <Routing />
           </main>
         </div>
+
+        <Alert stack={{limit: 3}} />
       </div>
     );
   }
