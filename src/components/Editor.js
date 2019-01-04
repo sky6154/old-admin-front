@@ -127,6 +127,12 @@ export default class MyEditor extends Component {
   };
 
   uploadImages = (entityMap) =>{
+    let req = {
+      type : '',
+      files : []
+    };
+
+
     if(!_.isNil(entityMap)){
       Object.keys(entityMap).map(function (key){
         let data = entityMap[key].data.src;
@@ -138,7 +144,7 @@ export default class MyEditor extends Component {
         let blob = base64ToBlob(realData, contentType);
         // blob에 아래 두 properties를 추가하면 file과 같은 형태가 된다.
         blob.lastModifiedDate = new Date();
-        blob.fileName = '';
+        blob.fileName = key + 1;
 
         console.log(blob);
       });
