@@ -2,9 +2,12 @@ import createActionTypes from '../utils/createActionTypes';
 import createActionCreator, {createSagaAction} from '../utils/createActionCreator';
 
 export const UPLOAD_IMAGE = createActionTypes('UPLOAD_IMAGE');
-
 export const uploadImage = createSagaAction(UPLOAD_IMAGE);
-
 export const UPLOAD_IMAGE_TRIGGER = 'UPLOAD_IMAGE_TRIGGER';
-
 export const uploadImageTrigger = (req, requiredFields = []) => createActionCreator(UPLOAD_IMAGE_TRIGGER, {req, requiredFields});
+
+
+export const REMOVE_STATE = createActionTypes('REMOVE_STATE');
+export const removeState = createSagaAction(REMOVE_STATE);
+export const REMOVE_STATE_TRIGGER = 'REMOVE_STATE_TRIGGER';
+export const removeStateTrigger = (req, requiredFields = []) => createActionCreator(REMOVE_STATE_TRIGGER, {req, requiredFields});

@@ -5,11 +5,14 @@ import {createIterator, createWatcher} from '../utils/createSaga';
 
 /***************************** Subroutines ************************************/
 const uploadImage = createIterator(actions.uploadImage, uploadImageApi);
+const removeState = createIterator(actions.removeState, () => {});
 
 /******************************* WATCHERS *************************************/
 
 const watchImageUpload = createWatcher(actions.UPLOAD_IMAGE_TRIGGER, uploadImage);
+const watchRemoveState = createWatcher(actions.REMOVE_STATE_TRIGGER, removeState);
 
 export default [
-  watchImageUpload
+  watchImageUpload,
+  watchRemoveState
 ];

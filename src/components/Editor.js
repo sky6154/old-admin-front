@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import {connect}          from "react-redux";
+import {withRouter}       from "react-router";
+import PropTypes          from 'prop-types';
 import _                  from 'lodash';
 
 import Editor, {createEditorStateWithText, composeDecorators} from 'draft-js-plugins-editor';
@@ -47,6 +50,8 @@ import ReactFileReader from 'react-file-reader';
 import {stateToHTML}   from 'draft-js-export-html';
 import base64ToBlob    from '../utils/base64ToBlob';
 
+import {uploadImageTrigger} from "../redux/actions/post";
+
 const emojiPlugin = createEmojiPlugin();
 const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
@@ -77,14 +82,12 @@ const plugins = [
   staticToolbarPlugin
 ];
 
-export default class MyEditor extends Component {
+class MyEditor extends Component {
   state = {
     editorState: EditorState.createEmpty()
   };
 
   handleFiles = files =>{
-    console.log(files);
-
     const base64 = files.base64;
     const newEditorState = this.insertImageToEditor(this.state.editorState, base64);
 
@@ -110,28 +113,39 @@ export default class MyEditor extends Component {
     const content = this.state.editorState.getCurrentContent();
     const dataToSaveBackend = convertToRaw(content);
 
-    console.log(content);
-
     // image는 빼서 base64대신 replace 후
     console.log(dataToSaveBackend);
 
     if(!_.isNil(dataToSaveBackend)){
-      this.uploadImages(dataToSaveBackend.entityMap);
+      // this.uploadImages(dataToSaveBackend.entityMap);
     }
 
 
     // HTML로 변환
-    console.log(stateToHTML(this.state.editorState.getCurrentContent()));
+    // console.log(stateToHTML(this.state.editorState.getCurrentContent()));
 
     // 변환된 이미지 주소로 replace 된 HTML을 DB에 넣자
   };
 
-  uploadImages = (entityMap) =>{
-    let req = {
-      type : '',
-      files : []
-    };
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    return null;
+  }
 
+  componentDidUpdate(prevProps, prevState, snapshot){
+    // 이미지 업로드 완료
+    // if(isPostProgress && step1)
+
+    // 이미지 업로드 src replace 완료
+    // if(isPostProgress && step1 && step2)
+
+    // 포스트 다 업로드 완료
+    // if(isPostProgress && step1 && step2 && step3)
+
+    // 이후 handling ..?
+  }
+
+  uploadImages = (entityMap) =>{
+    let formData = new FormData();
 
     if(!_.isNil(entityMap)){
       Object.keys(entityMap).map(function (key){
@@ -141,20 +155,29 @@ export default class MyEditor extends Component {
         let contentType = block[0].split(":")[1]; // ex) "image/gif"
         let realData = block[1].split(",")[1]; // ex) "R0lGODlhPQBEAPeoAJosM...."
 
+        let fileFormat = contentType.split("/")[1]; // ex) png
+        let fileName = parseInt(key) + 1;
+
         let blob = base64ToBlob(realData, contentType);
         // blob에 아래 두 properties를 추가하면 file과 같은 형태가 된다.
         blob.lastModifiedDate = new Date();
-        blob.fileName = key + 1;
+        blob.contentType = contentType;
 
-        console.log(blob);
+        let file = new File([blob], fileName + '.' + fileFormat);
+
+        formData.append('files', file);
       });
+
+     this.props.uploadImageTrigger(formData);
     }
-
-
   };
 
-  replaceImages = () =>{
+  replaceImages = () => {
+    console.log("REPLACE IMAGE");
+  };
 
+  uploadPost = () => {
+    console.log("UPLOAD POST");
   };
 
 
@@ -169,6 +192,8 @@ export default class MyEditor extends Component {
   };
 
   render(){
+    console.log(this.props.imageUploadResult);
+
     return (
       <div>
         <Toolbar>
@@ -272,3 +297,40 @@ class HeadlinesButton extends Component {
     );
   }
 }
+
+
+MyEditor.defaultProps = {
+  isPostProgress : false,
+  isImageUploading : false,
+  isReplaceSrc : false,
+  isPostUploading : false,
+  step1IsAllImageUploaded : false,
+  step2IsDoneReplaceSrc : false,
+  step3IsPostUpload : false
+};
+
+MyEditor.propTypes = {
+  isPostProgress : PropTypes.bool.isRequired,
+  isImageUploading : PropTypes.bool.isRequired,
+  isReplaceSrc : PropTypes.bool.isRequired,
+  isPostUploading : PropTypes.bool.isRequired,
+  step1IsAllImageUploaded : PropTypes.bool.isRequired,
+  step2IsDoneReplaceSrc : PropTypes.bool.isRequired,
+  step3IsPostUpload : PropTypes.bool.isRequired
+};
+
+function mapStateToProps(state){
+  return {
+    isPostProgress : state.post.isPostProgress,
+    isImageUploading : state.post.isImageUploading,
+    isReplaceSrc : state.post.isReplaceSrc,
+    isPostUploading : state.post.isPostUploading,
+    step1IsAllImageUploaded : state.post.step1IsAllImageUploaded,
+    step2IsDoneReplaceSrc : state.post.step2IsDoneReplaceSrc,
+    step3IsPostUpload : state.post.step3IsPostUpload
+  };
+}
+
+export default withRouter(connect(mapStateToProps, {
+  uploadImageTrigger
+})(MyEditor));
