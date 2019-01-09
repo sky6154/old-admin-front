@@ -50,7 +50,7 @@ import ReactFileReader from 'react-file-reader';
 import {stateToHTML}   from 'draft-js-export-html';
 import base64ToBlob    from '../utils/base64ToBlob';
 
-import {uploadImageTrigger} from "../redux/actions/post";
+import {uploadImageTrigger, replaceImageSrcTrigger, uploadPostTrigger, removeStateTrigger} from "../redux/actions/post";
 
 const emojiPlugin = createEmojiPlugin();
 const focusPlugin = createFocusPlugin();
@@ -117,7 +117,7 @@ class MyEditor extends Component {
     console.log(dataToSaveBackend);
 
     if(!_.isNil(dataToSaveBackend)){
-      // this.uploadImages(dataToSaveBackend.entityMap);
+      this.uploadImages(dataToSaveBackend.entityMap);
     }
 
 
@@ -127,11 +127,28 @@ class MyEditor extends Component {
     // 변환된 이미지 주소로 replace 된 HTML을 DB에 넣자
   };
 
-  getSnapshotBeforeUpdate(prevProps, prevState) {
-    return null;
-  }
+  // getSnapshotBeforeUpdate(prevProps, prevState) {
+  //   console.log(prevProps);
+  //
+  //   return null;
+  // }
 
   componentDidUpdate(prevProps, prevState, snapshot){
+    console.log(prevProps);
+    console.log(this.props);
+
+    if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc && this.props.step3IsPostUpload){
+
+    }
+    else if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc){
+
+    }
+    else if(this.props.isPostProgress && this.props.step1IsAllImageUploaded){
+      this.replaceImages(this.props.imageUploadInfo);
+    }
+
+
+
     // 이미지 업로드 완료
     // if(isPostProgress && step1)
 
@@ -172,8 +189,21 @@ class MyEditor extends Component {
     }
   };
 
-  replaceImages = () => {
-    console.log("REPLACE IMAGE");
+  replaceImages = (fileInfo) => {
+    const content = this.state.editorState.getCurrentContent();
+    const dataToSaveBackend = convertToRaw(content);
+
+    // image는 빼서 base64대신 replace 후
+    console.log(dataToSaveBackend);
+
+    if(!_.isNil(dataToSaveBackend)){
+      let req = {
+        fileInfo : fileInfo,
+        entityMap : dataToSaveBackend.entityMap
+      };
+
+      this.props.replaceImageSrcTrigger(req);
+    }
   };
 
   uploadPost = () => {
@@ -192,8 +222,6 @@ class MyEditor extends Component {
   };
 
   render(){
-    console.log(this.props.imageUploadResult);
-
     return (
       <div>
         <Toolbar>
@@ -306,7 +334,8 @@ MyEditor.defaultProps = {
   isPostUploading : false,
   step1IsAllImageUploaded : false,
   step2IsDoneReplaceSrc : false,
-  step3IsPostUpload : false
+  step3IsPostUpload : false,
+  imageUploadInfo : []
 };
 
 MyEditor.propTypes = {
@@ -316,7 +345,8 @@ MyEditor.propTypes = {
   isPostUploading : PropTypes.bool.isRequired,
   step1IsAllImageUploaded : PropTypes.bool.isRequired,
   step2IsDoneReplaceSrc : PropTypes.bool.isRequired,
-  step3IsPostUpload : PropTypes.bool.isRequired
+  step3IsPostUpload : PropTypes.bool.isRequired,
+  imageUploadInfo : PropTypes.array.isRequired
 };
 
 function mapStateToProps(state){
@@ -327,10 +357,14 @@ function mapStateToProps(state){
     isPostUploading : state.post.isPostUploading,
     step1IsAllImageUploaded : state.post.step1IsAllImageUploaded,
     step2IsDoneReplaceSrc : state.post.step2IsDoneReplaceSrc,
-    step3IsPostUpload : state.post.step3IsPostUpload
+    step3IsPostUpload : state.post.step3IsPostUpload,
+    imageUploadInfo : state.post.imageUploadInfo
   };
 }
 
 export default withRouter(connect(mapStateToProps, {
-  uploadImageTrigger
+  uploadImageTrigger,
+  replaceImageSrcTrigger,
+  uploadPostTrigger,
+  removeStateTrigger
 })(MyEditor));
