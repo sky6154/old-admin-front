@@ -51,6 +51,7 @@ import {stateToHTML}   from 'draft-js-export-html';
 import base64ToBlob    from '../utils/base64ToBlob';
 
 import {uploadImageTrigger, replaceImageSrcTrigger, uploadPostTrigger, removeStateTrigger} from "../redux/actions/post";
+import Alert                                                                               from "react-s-alert";
 
 const emojiPlugin = createEmojiPlugin();
 const focusPlugin = createFocusPlugin();
@@ -138,12 +139,15 @@ class MyEditor extends Component {
     console.log(this.props);
 
     if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc && this.props.step3IsPostUpload){
-
+      console.log("STEP 3");
+      this.props.removeStateTrigger();
     }
-    else if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc){
-
+    else if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc && !this.props.isPostUploading && !this.props.step3IsPostUpload){
+      console.log("STEP 2");
+      this.uploadPost();
     }
-    else if(this.props.isPostProgress && this.props.step1IsAllImageUploaded){
+    else if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && !this.props.isReplaceSrc && !this.props.step2IsDoneReplaceSrc && !this.props.step3IsPostUpload){
+      console.log("STEP 1");
       this.replaceImages(this.props.imageUploadInfo);
     }
 
@@ -185,7 +189,17 @@ class MyEditor extends Component {
         formData.append('files', file);
       });
 
-     this.props.uploadImageTrigger(formData);
+      // 버튼 다시 못누르게 이미지 업로드가 아니라 포스팅 진행중일때로 한다.
+      if(!this.props.isPostProgress){
+        this.props.uploadImageTrigger(formData);
+      }
+      else{
+        Alert.warning("작업 진행중 입니다.", {
+          position: 'top-right',
+          effect: 'slide',
+          timeout: 3000
+        });
+      }
     }
   };
 
@@ -202,12 +216,22 @@ class MyEditor extends Component {
         entityMap : dataToSaveBackend.entityMap
       };
 
-      this.props.replaceImageSrcTrigger(req);
+      if(!this.props.isReplaceSrc){
+        this.props.replaceImageSrcTrigger(req);
+      }
+      else{
+        Alert.warn("작업 진행중 입니다.", {
+          position: 'top-right',
+          effect: 'slide',
+          timeout: 3000
+        });
+      }
     }
   };
 
   uploadPost = () => {
-    console.log("UPLOAD POST");
+    let content = stateToHTML(this.state.editorState.getCurrentContent());
+    this.props.uploadPostTrigger(content);
   };
 
 

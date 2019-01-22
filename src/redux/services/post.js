@@ -20,7 +20,17 @@ export const uploadImageApi = req =>{
 };
 
 export const replaceImageSrcFunc = req => {
-  console.log(req);
+  let cursor = 0;
+  let limit = req.fileInfo.length;
+
+  Object.keys(req.entityMap).map(function (key){
+    if(req.entityMap[key].type === "image"){
+      if(cursor <= limit){
+        let filePath = req.fileInfo[cursor].path + req.fileInfo[cursor].fileName;
+        req.entityMap[key].data.src = filePath;
+      }
+    }
+  });
 }
 
 

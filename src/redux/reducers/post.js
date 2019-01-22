@@ -22,12 +22,14 @@ const actionHandlers = {
     const imageUploadResult = action.data;
     let isAllImageUploaded = true;
     let imageUploadInfo = [];
+    let isPostProgress = true;
 
     _.forEach(imageUploadResult, function(value, key){
       console.log(value);
 
       if(!_.isNil(value) && value.code != 1){
         isAllImageUploaded = false;
+        isPostProgress = false;
 
         Alert.error(value.message, {
           position: 'top-right',
@@ -47,7 +49,8 @@ const actionHandlers = {
     return Object.assign({}, state, {
       isImageUploading : false,
       step1IsAllImageUploaded : isAllImageUploaded,
-      imageUploadInfo : imageUploadInfo
+      imageUploadInfo : imageUploadInfo,
+      isPostProgress : isPostProgress
     });
   },
   [actionTypes.UPLOAD_IMAGE.FAILURE]: (state, action) =>{
@@ -57,7 +60,8 @@ const actionHandlers = {
       timeout: 3000
     });
 
-    return Object.assign({}, state, {initialState});
+    // ...initialkState 가 아니라 그냥 전체 Post쪽 정보를 초기화 한다.
+    return Object.assign({}, state, initialState);
   },
 
 
@@ -68,11 +72,12 @@ const actionHandlers = {
     const imageUploadResult = action.data;
 
     return Object.assign({}, state, {
-      isReplaceSrc : false
+      isReplaceSrc : false,
+      step2IsDoneReplaceSrc : true
     });
   },
   [actionTypes.REPLACE_IMAGE_SRC.FAILURE]: (state, action) =>{
-    return Object.assign({}, state, {...action});
+    return Object.assign({}, state, initialState);
   },
 
 
@@ -83,11 +88,12 @@ const actionHandlers = {
     const imageUploadResult = action.data;
 
     return Object.assign({}, state, {
-      isPostUploading : false
+      isPostUploading : false,
+      step3IsPostUpload : true
     });
   },
   [actionTypes.UPLOAD_POST.FAILURE]: (state, action) =>{
-    return Object.assign({}, state, {...action});
+    return Object.assign({}, state, initialState);
   },
 
 
