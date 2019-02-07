@@ -4,7 +4,7 @@ import {withRouter}       from "react-router";
 import PropTypes          from 'prop-types';
 import _                  from 'lodash';
 
-import Editor, {createEditorStateWithText, composeDecorators} from 'draft-js-plugins-editor';
+import Editor, {composeDecorators} from 'draft-js-plugins-editor';
 import createEmojiPlugin                                      from 'draft-js-emoji-plugin';
 import createImagePlugin                                      from 'draft-js-image-plugin';
 import createAlignmentPlugin                                  from 'draft-js-alignment-plugin';
@@ -44,6 +44,7 @@ import {
   convertFromRaw,
   EditorState,
   convertToRaw,
+  ContentState
 }                                                             from 'draft-js';
 
 import ReactFileReader from 'react-file-reader';
@@ -51,7 +52,10 @@ import {stateToHTML}   from 'draft-js-export-html';
 import base64ToBlob    from '../utils/base64ToBlob';
 
 import {uploadImageTrigger, replaceImageSrcTrigger, uploadPostTrigger, removeStateTrigger} from "../redux/actions/post";
+import {fetchBoardListTrigger}                                                             from "../redux/actions/board";
 import Alert                                                                               from "react-s-alert";
+import TextField                                                                           from "@material-ui/core/es/TextField/TextField";
+import MenuItem                                                                            from "@material-ui/core/es/MenuItem/MenuItem";
 
 const emojiPlugin = createEmojiPlugin();
 const focusPlugin = createFocusPlugin();
@@ -85,7 +89,9 @@ const plugins = [
 
 class MyEditor extends Component {
   state = {
-    editorState: EditorState.createEmpty()
+    editorState: EditorState.createEmpty(),
+    boardId    : -1,
+    title      : ''
   };
 
   handleFiles = files =>{
@@ -114,18 +120,19 @@ class MyEditor extends Component {
     const content = this.state.editorState.getCurrentContent();
     const dataToSaveBackend = convertToRaw(content);
 
-    // image는 빼서 base64대신 replace 후
-    console.log(dataToSaveBackend);
-
-    if(!_.isNil(dataToSaveBackend)){
-      this.uploadImages(dataToSaveBackend.entityMap);
+    if(this.state.title === ''){
+      Alert.error("제목을 입력하여 주세요.", {
+        position: 'top-right',
+        effect  : 'slide',
+        timeout : 3000
+      });
+    }
+    else{
+      if(!_.isNil(dataToSaveBackend)){
+        this.uploadImages(dataToSaveBackend.entityMap);
+      }
     }
 
-
-    // HTML로 변환
-    // console.log(stateToHTML(this.state.editorState.getCurrentContent()));
-
-    // 변환된 이미지 주소로 replace 된 HTML을 DB에 넣자
   };
 
   // getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -134,13 +141,32 @@ class MyEditor extends Component {
   //   return null;
   // }
 
+  static getDerivedStateFromProps(props, state) {
+    if(props.isPostProgress && props.step1IsAllImageUploaded && props.step2IsDoneReplaceSrc && props.step3IsPostUpload){
+      const editorState = EditorState.push(state.editorState, ContentState.createFromText(''));
+
+      return {
+        editorState : editorState,
+        title : ''
+      }
+    }
+
+    return null;
+  }
+
+  componentDidMount(){
+    this.props.fetchBoardListTrigger();
+  }
+
   componentDidUpdate(prevProps, prevState, snapshot){
-    console.log(prevProps);
-    console.log(this.props);
+    if(this.state.boardId === -1 && !_.isNil(this.props.boardList) && !_.isEmpty(this.props.boardList)){
+      this.setState({boardId : this.props.boardList[0].boardId});
+    }
 
     if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc && this.props.step3IsPostUpload){
       console.log("STEP 3");
       this.props.removeStateTrigger();
+      // this.clearContent();
     }
     else if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc && !this.props.isPostUploading && !this.props.step3IsPostUpload){
       console.log("STEP 2");
@@ -150,7 +176,6 @@ class MyEditor extends Component {
       console.log("STEP 1");
       this.replaceImages(this.props.imageUploadInfo);
     }
-
 
 
     // 이미지 업로드 완료
@@ -164,6 +189,42 @@ class MyEditor extends Component {
 
     // 이후 handling ..?
   }
+
+  handleTargetBoard = () => event =>{
+    this.setState({boardId: event.target.value});
+  };
+
+  handleTitle = (event) =>{
+    this.setState({title: event.target.value});
+  };
+
+  printBoardList = (boardList) =>{
+    if(!_.isNil(boardList) && boardList.length > 0){
+
+      return <TextField
+        id="outlined-select-currency"
+        select
+        label="Board list"
+        className={"textField"}
+        value={this.state.boardId}
+        onChange={this.handleTargetBoard()}
+        SelectProps={{
+          MenuProps: {
+            className: "menu",
+          },
+        }}
+        margin="normal"
+        variant="outlined"
+        style={{width: 200}}
+      >
+          {boardList.map(boardInfo => (
+            <MenuItem key={boardInfo.description} value={boardInfo.boardId}>
+              {boardInfo.description}
+            </MenuItem>
+          ))}
+        </TextField>;
+    }
+  };
 
   uploadImages = (entityMap) =>{
     let formData = new FormData();
@@ -196,42 +257,46 @@ class MyEditor extends Component {
       else{
         Alert.warning("작업 진행중 입니다.", {
           position: 'top-right',
-          effect: 'slide',
-          timeout: 3000
+          effect  : 'slide',
+          timeout : 3000
         });
       }
     }
   };
 
-  replaceImages = (fileInfo) => {
+  replaceImages = (fileInfo) =>{
     const content = this.state.editorState.getCurrentContent();
     const dataToSaveBackend = convertToRaw(content);
-
-    // image는 빼서 base64대신 replace 후
-    console.log(dataToSaveBackend);
 
     if(!_.isNil(dataToSaveBackend)){
       let req = {
         fileInfo : fileInfo,
-        entityMap : dataToSaveBackend.entityMap
+        entityMap: dataToSaveBackend.entityMap
       };
 
       if(!this.props.isReplaceSrc){
         this.props.replaceImageSrcTrigger(req);
       }
       else{
-        Alert.warn("작업 진행중 입니다.", {
+        Alert.warning("작업 진행중 입니다.", {
           position: 'top-right',
-          effect: 'slide',
-          timeout: 3000
+          effect  : 'slide',
+          timeout : 3000
         });
       }
     }
   };
 
-  uploadPost = () => {
+  uploadPost = () =>{
     let content = stateToHTML(this.state.editorState.getCurrentContent());
-    this.props.uploadPostTrigger(content);
+
+    let req = {
+      boardId: this.state.boardId,
+      title  : this.state.title,
+      content: content
+    };
+
+    this.props.uploadPostTrigger(req);
   };
 
 
@@ -246,8 +311,22 @@ class MyEditor extends Component {
   };
 
   render(){
+    let boardListDropDown = this.printBoardList(this.props.boardList);
+
     return (
       <div>
+        {boardListDropDown}
+
+        <TextField
+          id="standard-full-width"
+          label="제목"
+          placeholder="제목을 입력하세요."
+          fullWidth
+          margin="normal"
+          onChange={this.handleTitle}
+          value={this.state.title}
+          variant="outlined"
+        />
         <Toolbar>
             {
               // may be use React.Fragment instead of div to improve perfomance after React 16
@@ -352,43 +431,47 @@ class HeadlinesButton extends Component {
 
 
 MyEditor.defaultProps = {
-  isPostProgress : false,
-  isImageUploading : false,
-  isReplaceSrc : false,
-  isPostUploading : false,
-  step1IsAllImageUploaded : false,
-  step2IsDoneReplaceSrc : false,
-  step3IsPostUpload : false,
-  imageUploadInfo : []
+  isPostProgress            : false,
+  isImageUploading          : false,
+  isReplaceSrc              : false,
+  isPostUploading           : false,
+  step1IsAllImageUploaded   : false,
+  step2IsDoneReplaceSrc     : false,
+  step3IsPostUpload         : false,
+  imageUploadInfo           : [],
+  isFetchBoardListRequesting: false,
+  boardList                 : []
 };
 
 MyEditor.propTypes = {
-  isPostProgress : PropTypes.bool.isRequired,
-  isImageUploading : PropTypes.bool.isRequired,
-  isReplaceSrc : PropTypes.bool.isRequired,
-  isPostUploading : PropTypes.bool.isRequired,
-  step1IsAllImageUploaded : PropTypes.bool.isRequired,
-  step2IsDoneReplaceSrc : PropTypes.bool.isRequired,
-  step3IsPostUpload : PropTypes.bool.isRequired,
-  imageUploadInfo : PropTypes.array.isRequired
+  isPostProgress            : PropTypes.bool.isRequired,
+  isImageUploading          : PropTypes.bool.isRequired,
+  isReplaceSrc              : PropTypes.bool.isRequired,
+  isPostUploading           : PropTypes.bool.isRequired,
+  step1IsAllImageUploaded   : PropTypes.bool.isRequired,
+  step2IsDoneReplaceSrc     : PropTypes.bool.isRequired,
+  step3IsPostUpload         : PropTypes.bool.isRequired,
+  imageUploadInfo           : PropTypes.array.isRequired,
+  isFetchBoardListRequesting: PropTypes.bool.isRequired,
+  boardList                 : PropTypes.array.isRequired
 };
 
 function mapStateToProps(state){
   return {
-    isPostProgress : state.post.isPostProgress,
-    isImageUploading : state.post.isImageUploading,
-    isReplaceSrc : state.post.isReplaceSrc,
-    isPostUploading : state.post.isPostUploading,
-    step1IsAllImageUploaded : state.post.step1IsAllImageUploaded,
-    step2IsDoneReplaceSrc : state.post.step2IsDoneReplaceSrc,
-    step3IsPostUpload : state.post.step3IsPostUpload,
-    imageUploadInfo : state.post.imageUploadInfo
+    isPostProgress            : state.post.isPostProgress,
+    isImageUploading          : state.post.isImageUploading,
+    isReplaceSrc              : state.post.isReplaceSrc,
+    isPostUploading           : state.post.isPostUploading,
+    step1IsAllImageUploaded   : state.post.step1IsAllImageUploaded,
+    step2IsDoneReplaceSrc     : state.post.step2IsDoneReplaceSrc,
+    step3IsPostUpload         : state.post.step3IsPostUpload,
+    imageUploadInfo           : state.post.imageUploadInfo,
+    isFetchBoardListRequesting: state.board.isFetchBoardListRequesting,
+    boardList                 : state.board.boardList
   };
 }
 
 export default withRouter(connect(mapStateToProps, {
-  uploadImageTrigger,
-  replaceImageSrcTrigger,
-  uploadPostTrigger,
-  removeStateTrigger
+  uploadImageTrigger, replaceImageSrcTrigger, uploadPostTrigger, removeStateTrigger,
+  fetchBoardListTrigger
 })(MyEditor));

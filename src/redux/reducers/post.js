@@ -25,9 +25,11 @@ const actionHandlers = {
     let isPostProgress = true;
 
     _.forEach(imageUploadResult, function(value, key){
-      console.log(value);
+      // 게시글에 이미지를 올리지 않음
+      if(!_.isNil(value) && value.code == -1){
 
-      if(!_.isNil(value) && value.code != 1){
+      }
+      else if(!_.isNil(value) && value.code != 1){
         isAllImageUploaded = false;
         isPostProgress = false;
 

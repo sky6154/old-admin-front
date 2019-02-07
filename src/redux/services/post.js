@@ -38,9 +38,11 @@ export const uploadPostApi = req =>{
   const apiServer = getApiServer();
 
   console.log("UPLOAD POST API CALL");
-  const fullUrl = `${apiServer}/post/postUpload`;
+  const fullUrl = `${apiServer}/post/uploadPost`;
 
-  return axios.post(fullUrl, req, createCommonRequest())
+  let jsonData = JSON.stringify(req);
+
+  return axios.post(fullUrl, jsonData, createCommonRequest())
     .then((res) =>{
       return res.data;
     })
