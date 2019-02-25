@@ -38,7 +38,8 @@
     "react-scripts": "2.1.2",
     "redux": "^3.7.2",
     "redux-immutable-state-invariant": "^2.1.0",
-    "redux-saga": "^0.16.0"
+    "redux-saga": "^0.16.0",
+    "universal-cookie": "^3.0.7"
   },
   "scripts": {
     "start": "react-scripts start",

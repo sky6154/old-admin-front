@@ -1,27 +1,29 @@
-import * as actionTypes from '../actions/account';
-import createReducer    from '../utils/createReducer';
-import Alert            from 'react-s-alert';
-import _                from "lodash";
+import * as actionTypes    from '../actions/account';
+import createReducer       from '../utils/createReducer';
+import Alert               from 'react-s-alert';
+import _                   from "lodash";
+import {removeSessionInfo, insertSessionInfo} from "../../config/session";
 
 const initialState = {
   isLoginRequesting    : false,
   isLogin              : false,
   isLogoutRequesting   : false,
-  isAuthCheckRequesting: false,
-  authList             : []
+  isAuthCheckRequesting: false
 };
 
 const actionHandlers = {
   [actionTypes.LOGIN.REQUEST]: (state, action) =>{
-    return Object.assign({}, state, {isLoginRequesting: true, isLogin: false, authList: []});
+    return Object.assign({}, state, {isLoginRequesting: true});
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) =>{
-    const isLogin = action.data;
+    // const isLogin = action.data;
+
+    console.log(action);
+    insertSessionInfo(action.data.token, action.data.authorities);
 
     return Object.assign({}, state, {
       isLoginRequesting: false,
-      isLogin          : isLogin,
-      authList         : []
+      isLogin          : true
     });
   },
   [actionTypes.LOGIN.FAILURE]: (state, action) =>{
@@ -31,11 +33,11 @@ const actionHandlers = {
       timeout : 3000
     });
 
+    removeSessionInfo();
 
     return Object.assign({}, state, {
       isLoginRequesting: false,
-      isLogin          : false,
-      authList         : []
+      isLogin          : false
     });
   },
 
@@ -46,10 +48,11 @@ const actionHandlers = {
   [actionTypes.LOGOUT.SUCCESS]: (state, action) =>{
     const isLogin = action.data;
 
+    removeSessionInfo();
+
     return Object.assign({}, state, {
       isLogoutRequesting: false,
-      isLogin           : isLogin,
-      authList          : []
+      isLogin           : false
     });
   },
   [actionTypes.LOGOUT.FAILURE]: (state, action) =>{
@@ -74,8 +77,7 @@ const actionHandlers = {
 
     return Object.assign({}, state, {
       isFetchBoardListRequesting: false,
-      isLogin                   : isLogin,
-      authList                  : []
+      isLogin                   : isLogin
     });
   },
   [actionTypes.AUTH_CHECK.FAILURE]: (state, action) =>{
@@ -87,8 +89,7 @@ const actionHandlers = {
 
 
     return Object.assign({}, state, {
-      isFetchBoardListRequesting: false,
-      authList                  : []
+      isFetchBoardListRequesting: false
     });
   },
 

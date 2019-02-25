@@ -13,6 +13,10 @@ import Paper            from '@material-ui/core/Paper';
 import Typography       from '@material-ui/core/Typography';
 import withStyles       from '@material-ui/core/styles/withStyles';
 
+import {loginTrigger}      from "../redux/actions/account";
+import {withRouter}        from "react-router";
+import {connect}           from "react-redux";
+
 const styles = theme => ({
   main  : {
     width                                                   : 'auto',
@@ -46,9 +50,29 @@ const styles = theme => ({
 });
 
 class Login extends React.Component {
+  constructor(props){
+    super(props);
 
-  handleLogin = (id, pw) =>{
+    this.state = {
+      isLogged: false,
+      id      : '',
+      password: ''
+    };
+  }
 
+  handleChange = name => event =>{
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+
+  handleLogin = () =>{
+    let req = {
+      username: this.state.id,
+      password: this.state.password
+    };
+
+    this.props.loginTrigger(req);
   };
 
   render(){
@@ -67,22 +91,22 @@ class Login extends React.Component {
         <form className={classes.form}>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="email">ID</InputLabel>
-            <Input id="email" name="email" autoComplete="id" autoFocus />
+            <Input id="email" name="email" autoComplete="id" autoFocus onChange={this.handleChange('id')} />
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="password">Password</InputLabel>
-            <Input name="password" type="password" id="password" autoComplete="current-password" />
+            <Input name="password" type="password" id="password" autoComplete="current-password" onChange={this.handleChange('password')} />
           </FormControl>
           {/*<FormControlLabel*/}
             {/*control={<Checkbox value="remember" color="primary" />}*/}
             {/*label="Remember me"*/}
           {/*/>*/}
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={this.handleLogin}
           >
             Sign in
           </Button>
@@ -93,8 +117,30 @@ class Login extends React.Component {
   }
 }
 
-Login.propTypes = {
-  classes: PropTypes.object.isRequired,
+Login.defaultProps = {
+  isLoginRequesting    : false,
+  isLogin              : false,
+  isLogoutRequesting   : false,
+  isAuthCheckRequesting: false
 };
 
-export default withStyles(styles, {withTheme: true})(Login);
+Login.propTypes = {
+  classes              : PropTypes.object.isRequired,
+  isLoginRequesting    : PropTypes.bool.isRequired,
+  isLogin              : PropTypes.bool.isRequired,
+  isLogoutRequesting   : PropTypes.bool.isRequired,
+  isAuthCheckRequesting: PropTypes.bool.isRequired
+};
+
+function mapStateToProps(state){
+  return {
+    isLoginRequesting    : state.account.isLoginRequesting,
+    isLogin              : state.account.isLogin,
+    isLogoutRequesting   : state.account.isLogoutRequesting,
+    isAuthCheckRequesting: state.account.isAuthCheckRequesting
+  };
+}
+
+export default withRouter(connect(mapStateToProps, {
+  loginTrigger
+})(withStyles(styles, {withTheme: true})(Login)));

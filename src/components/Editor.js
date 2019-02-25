@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {connect}          from "react-redux";
 import {withRouter}       from "react-router";
 import PropTypes          from 'prop-types';
@@ -57,6 +57,10 @@ import Alert                                                                    
 import TextField                                                                           from "@material-ui/core/es/TextField/TextField";
 import MenuItem                                                                            from "@material-ui/core/es/MenuItem/MenuItem";
 
+import {getRole}           from '../config/session';
+import {isPermitted, Role} from '../config/Role';
+
+
 const emojiPlugin = createEmojiPlugin();
 const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
@@ -87,12 +91,32 @@ const plugins = [
   staticToolbarPlugin
 ];
 
-class MyEditor extends Component {
-  state = {
-    editorState: EditorState.createEmpty(),
-    boardId    : -1,
-    title      : ''
-  };
+class MyEditor extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      boardId    : -1,
+      title      : ''
+    };
+
+    // TODO
+    // authCheckTrigger를 isPermitted에 넣어야 하는가, 권한 없으면 로그인으로 돌리는.....
+
+    // let roles = getRole();
+    // let requiredRoles = [Role.ROLE_ADMIN, Role.ROLE_BLOG];
+    //
+    // this.props.authCheckTrigger(this.props.history);
+    //
+    // if(!isPermitted(roles, requiredRoles)){
+    //
+    // }
+
+
+  }
+
+
 
   handleFiles = files =>{
     const base64 = files.base64;
@@ -383,7 +407,7 @@ class MyEditor extends Component {
 }
 
 
-class HeadlinesPicker extends Component {
+class HeadlinesPicker extends React.Component {
   componentDidMount(){
     setTimeout(() =>{
       window.addEventListener('click', this.onWindowClick);
@@ -411,7 +435,7 @@ class HeadlinesPicker extends Component {
   }
 }
 
-class HeadlinesButton extends Component {
+class HeadlinesButton extends React.Component {
   onClick = () =>
     // A button can call `onOverrideContent` to replace the content
     // of the toolbar. This can be useful for displaying sub
