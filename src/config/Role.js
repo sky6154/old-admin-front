@@ -1,4 +1,5 @@
 import _ from "lodash";
+import {getToken} from "./session";
 
 export const Role = Object.freeze({
     ROLE_ADMIN: "ROLE_ADMIN",
@@ -8,6 +9,10 @@ export const Role = Object.freeze({
 
 export function isPermitted(roles, requiredPermissions) {
     let isPermitted = false;
+
+    if(_.isNil(getToken())){
+        return false;
+    }
 
     if (!Array.isArray(requiredPermissions) || !Array.isArray(roles)) {
         throw "Arguments must be a array";
