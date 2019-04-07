@@ -100,23 +100,7 @@ class MyEditor extends React.Component {
       boardId    : -1,
       title      : ''
     };
-
-    // TODO
-    // authCheckTrigger를 isPermitted에 넣어야 하는가, 권한 없으면 로그인으로 돌리는.....
-
-    // let roles = getRole();
-    // let requiredRoles = [Role.ROLE_ADMIN, Role.ROLE_BLOG];
-    //
-    // this.props.authCheckTrigger(this.props.history);
-    //
-    // if(!isPermitted(roles, requiredRoles)){
-    //
-    // }
-
-
   }
-
-
 
   handleFiles = files =>{
     const base64 = files.base64;

@@ -23,7 +23,7 @@ export function isPermitted(roles, requiredPermissions) {
           throw "Wrong role in required permission array."
         }
 
-        if(role == requiredPermissions){
+        if(role == val){
           isPermitted = true;
           return false; // break loop
         }

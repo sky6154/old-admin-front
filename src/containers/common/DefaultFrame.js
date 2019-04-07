@@ -18,7 +18,6 @@ import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 
-
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -152,7 +151,7 @@ class DefaultFrame extends React.Component {
                 <MenuIcon />
               </IconButton>
               <Typography variant="h6" color="inherit" noWrap>
-                My Admin
+                Develobeer Admin
               </Typography>
             </Toolbar>
           </AppBar>
