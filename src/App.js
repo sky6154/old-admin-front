@@ -1,6 +1,8 @@
-import React, {Component}                   from 'react';
-import DefaultFrame                                from "./containers/common/DefaultFrame";
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import React, {Component}                 from 'react';
+import {Route, Switch}                    from "react-router-dom";
+import DefaultFrame                       from "./containers/common/DefaultFrame";
+import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
+import Login                              from "./containers/Login";
 
 const theme = createMuiTheme({
   palette: {
@@ -37,7 +39,10 @@ class App extends Component {
   render(){
     return (
       <MuiThemeProvider theme={theme}>
-        <DefaultFrame />
+        <Switch>
+          <Route exact path="/login" component={Login} />
+          <Route path="/" component={DefaultFrame} />
+        </Switch>
       </MuiThemeProvider>
     );
   }
