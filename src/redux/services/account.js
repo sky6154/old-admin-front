@@ -34,7 +34,7 @@ export const logoutApi = req =>{
     });
 };
 
-export const authCheckApi = history =>{
+export const authCheckApi = () =>{
   const apiServer = getApiServer();
 
   console.log("AUTH CHECK API CALL");
@@ -45,12 +45,12 @@ export const authCheckApi = history =>{
       return res.data;
     })
     .catch((err) =>{
-      switch(err.response.status){
-        case 401:
-          history.replace('/login');
-          break;
-        default:
-          throw err;
-      }
+      // switch(err.response.status){
+      //   case 401:
+      //
+      //     break;
+      //   default:
+      //     throw err;
+      // }
     });
 };

@@ -1,7 +1,9 @@
 import React           from "react";
 import {Route, Switch} from "react-router-dom";
 import Main            from "./containers/Main";
-import PostManage      from "./containers/PostManage";
+import PostManage      from "./containers/post/PostManage";
+import AdminManage      from "./containers/admin/AdminManage";
+
 
 class Routing extends React.Component {
   render(){
@@ -9,9 +11,9 @@ class Routing extends React.Component {
       <div>
         {/*<DefaultFrame />*/}
         <Switch>
-          {/*<Route path="/noAuth" component={NoAuthorization} />*/}
           <Route exact path="/" component={Main} />
-          <Route path="/post" component={PostManage} />
+          <Route exact path="/post/postManage" component={PostManage} />
+          <Route exact path="/admin/adminManage" component={AdminManage} />
         </Switch>
       </div>
     );

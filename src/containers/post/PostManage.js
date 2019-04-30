@@ -1,18 +1,14 @@
-import React from 'react';
-import MyEditor from "../components/Editor";
-import {isPermitted, Role} from "../config/Role";
-import {getRole} from "../config/session";
+import React                   from 'react';
+import MyEditor                from "../../components/Editor";
+import {permissionCheck, Role} from "../../config/Role";
 
 class PostManage extends React.Component {
     constructor(props) {
         super(props);
 
         let requiredRoles = [Role.ROLE_ADMIN, Role.ROLE_BLOG];
-        let myRoles = getRole();
 
-        if(!isPermitted(myRoles, requiredRoles)){
-            this.props.history.push("/login");
-        }
+        permissionCheck(requiredRoles, this.props.history);
     }
 
 

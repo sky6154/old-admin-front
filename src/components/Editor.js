@@ -57,9 +57,6 @@ import Alert                                                                    
 import TextField                                                                           from "@material-ui/core/es/TextField/TextField";
 import MenuItem                                                                            from "@material-ui/core/es/MenuItem/MenuItem";
 
-import {getRole}           from '../config/session';
-import {isPermitted, Role} from '../config/Role';
-
 
 const emojiPlugin = createEmojiPlugin();
 const focusPlugin = createFocusPlugin();

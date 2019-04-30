@@ -3,6 +3,7 @@ import {Route, Switch}                    from "react-router-dom";
 import DefaultFrame                       from "./containers/common/DefaultFrame";
 import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
 import Login                              from "./containers/Login";
+import {NoAuthorization}                              from "./containers/NoAuthorization";
 
 const theme = createMuiTheme({
   palette: {
@@ -40,6 +41,7 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <Switch>
+          <Route exact path="/noAuth" component={NoAuthorization} />
           <Route exact path="/login" component={Login} />
           <Route path="/" component={DefaultFrame} />
         </Switch>

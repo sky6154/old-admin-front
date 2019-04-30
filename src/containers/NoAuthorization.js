@@ -1,15 +1,13 @@
 import React from 'react';
 
-const NoAuthorization = () => {
+export const NoAuthorization = () => {
   return (
     <div>
       <div>
+        Access Denied
         <br />
-        Access Denied<br />
         페이지 접근 권한 없음
       </div>
     </div>
   );
 };
-
-export default NoAuthorization;

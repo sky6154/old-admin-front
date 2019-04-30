@@ -71,8 +71,8 @@ class Menu extends React.Component {
           <List component="div" disablePadding>
             <ListItem button key={"게시글 관리"} className={classes.nested}>
               <ListItemIcon><AssignmentIcon /></ListItemIcon>
-              <ListItemText inset primary={"테스트"} onClick={() =>{
-                this.goTo("/post");
+              <ListItemText inset primary={"게시글 작성"} onClick={() =>{
+                this.goTo("/post/postManage");
               }} />
             </ListItem>
           </List>
@@ -89,7 +89,7 @@ class Menu extends React.Component {
             <ListItem button className={classes.nested}>
               <ListItemIcon><FaceIcon /></ListItemIcon>
               <ListItemText inset primary={"운영자 관리"} onClick={() =>{
-                this.goTo("/user");
+                this.goTo("/admin/adminManage");
               }} />
             </ListItem>
             <ListItem button className={classes.nested}>
