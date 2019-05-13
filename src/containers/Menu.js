@@ -21,7 +21,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   nested: {
-    paddingLeft: theme.spacing.unit * 4,
+    paddingLeft: theme.spacing(4),
   },
 });
 
@@ -63,7 +63,7 @@ class Menu extends React.Component {
       >
         <ListItem button onClick={() => this.handleClick("post")}>
           <ListItemIcon><AssignmentIcon /></ListItemIcon>
-          <ListItemText inset primary={"게시글 관리"} />
+          <ListItemText primary={"게시글 관리"} />
           {this.state.isPostFoldOpen ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
 
@@ -71,7 +71,7 @@ class Menu extends React.Component {
           <List component="div" disablePadding>
             <ListItem button key={"게시글 관리"} className={classes.nested}>
               <ListItemIcon><AssignmentIcon /></ListItemIcon>
-              <ListItemText inset primary={"게시글 작성"} onClick={() =>{
+              <ListItemText primary={"게시글 작성"} onClick={() =>{
                 this.goTo("/post/postManage");
               }} />
             </ListItem>
@@ -80,7 +80,7 @@ class Menu extends React.Component {
 
         <ListItem button onClick={() => this.handleClick("admin")}>
           <ListItemIcon><FaceIcon /></ListItemIcon>
-          <ListItemText inset primary={"운영자 관리"} />
+          <ListItemText primary={"운영자 관리"} />
           {this.state.isAdminFoldingOpen ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
 
@@ -88,13 +88,13 @@ class Menu extends React.Component {
           <List component="div" disablePadding>
             <ListItem button className={classes.nested}>
               <ListItemIcon><FaceIcon /></ListItemIcon>
-              <ListItemText inset primary={"운영자 관리"} onClick={() =>{
+              <ListItemText primary={"운영자 관리"} onClick={() =>{
                 this.goTo("/admin/adminManage");
               }} />
             </ListItem>
             <ListItem button className={classes.nested}>
               <ListItemIcon><AccessTimeIcon /></ListItemIcon>
-              <ListItemText inset primary={"운영자 로그"} onClick={() =>{
+              <ListItemText primary={"운영자 로그"} onClick={() =>{
                 this.goTo("/user");
               }} />
             </ListItem>
@@ -103,7 +103,7 @@ class Menu extends React.Component {
 
         <ListItem button onClick={() => this.handleClick("my")}>
           <ListItemIcon><SettingsIcon /></ListItemIcon>
-          <ListItemText inset primary={"MY"} />
+          <ListItemText primary={"MY"} />
           {this.state.isMyFoldingOpen ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
 
@@ -111,7 +111,7 @@ class Menu extends React.Component {
           <List component="div" disablePadding>
             <ListItem button className={classes.nested}>
               <ListItemIcon><FingerprintIcon /></ListItemIcon>
-              <ListItemText inset primary={"비밀번호 변경"} onClick={() =>{
+              <ListItemText primary={"비밀번호 변경"} onClick={() =>{
                 this.goTo("/user")
               }} />
             </ListItem>

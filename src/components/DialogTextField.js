@@ -68,19 +68,19 @@ class DialogTextField extends React.Component {
     const isRequired = (_.isNil(this.props.isRequired)) ? false : this.props.isRequired;
     const errorText = (isRequired && this.state.isEmpty) ? "필수로 입력되어야 하는 데이터 입니다." : undefined;
 
-    const defaultStyle = {
-      margin: "0 0 30px 0"
-    };
-
-    let style = defaultStyle;
-
-    if(!_.isNil(this.props.style)){
-      style = Object.assign(defaultStyle, this.props.style);
-    }
+    // const defaultStyle = {
+    //   margin: "0 0 30px 0"
+    // };
+    //
+    // let style = defaultStyle;
+    //
+    // if(!_.isNil(this.props.style)){
+    //   style = Object.assign(defaultStyle, this.props.style);
+    // }
 
     return <TextField fullWidth={true} key={index} rowsMax={5} value={this.state.value} helperText={hintText}
-                      label={floatingLabelText} multiline={multiLine} rows={rows} required={isRequired}
-                      style={style} onChange={(event) =>{
+                      label={floatingLabelText} multiline={multiLine} rows={rows} required={isRequired} error={isRequired && this.state.isEmpty}
+                      /*style={style}*/ onChange={(event) =>{
       let value = event.target.value;
 
       let isEmpty = (value === "" || _.isNil(value)) ? true : false

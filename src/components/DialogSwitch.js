@@ -65,9 +65,6 @@ class DialogSwitch extends React.Component {
   handleSwitch(event, isChecked){
     let value = (isChecked) ? this.state.defaultValue.active : this.state.defaultValue.disactive;
 
-    // TODO Material ui 업데이트 하면서 수정해야 함
-    // console.log(isChecked, value);
-
     this.setState({
       value    : value,
       isTouched: true

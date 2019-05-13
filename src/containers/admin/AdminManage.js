@@ -37,8 +37,8 @@ export default class AdminManage extends React.Component {
         "3": "Value 3"
       },
       "someToggle": {
-        "N": "FALSE",
-        "Y": "TRUE"
+        disactive: "FALSE",
+        active: "TRUE"
       }
     };
 
@@ -146,9 +146,10 @@ export default class AdminManage extends React.Component {
         title       : "searchDropDown",
         dbColumnName: "role",
         hintText    : "searchDropDown Hint",
-        type        : "dropDown",
+        type        : "searchDropDown",
         value       : replaceValue["someType"],
         replaceValue: replaceValue["someType"],
+        isRequired  : true,
         usage       : [
           "insert",
           "update"

@@ -1,28 +1,30 @@
 import React from "react";
 
-import _ from "lodash";
-
-// import DateTimePicker   from "material-ui-datetimepicker";
-// import DatePickerDialog from "material-ui/DatePicker/DatePickerDialog";
-// import TimePickerDialog from "material-ui/TimePicker/TimePickerDialog";
-// import closeSvg from "material-design-icons/navigation/svg/production/ic_close_48px.svg";
-
-import CloseIcon from '@material-ui/icons/Close';
-import moment    from "moment";
-
-
+import _           from "lodash";
+import moment      from "moment";
 import MomentUtils from '@date-io/moment';
-import DateFnsUtils from "@date-io/date-fns"; // choose your lib
-import {
-  InlineDateTimePicker, MuiPickersUtilsProvider
-}                   from "material-ui-pickers";
+
+import {MuiPickersUtilsProvider, KeyboardDateTimePicker} from '@material-ui/pickers';
+import {createMuiTheme}                                  from "@material-ui/core";
+import {ThemeProvider}                                   from "@material-ui/styles";
+
+const materialTheme = createMuiTheme({
+  overrides: {
+    MuiTypography: {
+      h4: {
+        fontSize: "2rem" // 달력 폰트 사이즈.. 맞는거같은데 적용이 안된다. 알아봐야 함
+      }
+    }
+  }
+});
+
 
 class DialogDatePicker extends React.Component {
   constructor(props){
     super(props);
 
     this.state = {
-      value    : '',
+      value    : null,
       isTouched: false,
       isEmpty  : true
     }
@@ -66,7 +68,7 @@ class DialogDatePicker extends React.Component {
     }
     else{
       isEmpty = true;
-      val = '';
+      val = null;
     }
 
     this.setState({
@@ -79,7 +81,7 @@ class DialogDatePicker extends React.Component {
 
     this.props.setValidateFunc(this.props.index, isValidate);
     this.props.setValueFunc(this.props.index, {
-      [this.props.dbColumnName]: val
+      [this.props.dbColumnName]: (val == null) ? '' : val
     });
 
     if(_.isFunction(this.props._onChange)){
@@ -97,55 +99,23 @@ class DialogDatePicker extends React.Component {
     const isRequired = (_.isNil(this.props.isRequired)) ? false : this.props.isRequired;
     const errorText = (isRequired && this.state.isEmpty) ? "필수로 입력되어야 하는 데이터 입니다." : undefined;
 
-    /**
-     * TODO 최초 키보드 입력 시 입력 불가능한 이슈 수정해야 함
-     * Material ui 버전업에 따른 사용방법 변경 해야 함
-     */
-
-    // return <DateTimePicker
-    //   value={this.state.value}
-    //   onChange={this.handleChange}
-    //   helperText={floatingLabelText}
-    //   label={hintText}
-    //   format="yyyy-MM-dd HH:mm:ss"
-    //   onError={console.log}
-    //   emptyLabel={errorText}
-    //   clearable
-    // />
-
     return (
-      <MuiPickersUtilsProvider utils={MomentUtils}>
-        <div className="picker">
-          <InlineDateTimePicker
-            keyboard={true}
+      <ThemeProvider theme={materialTheme}>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <KeyboardDateTimePicker
+            error={isRequired && this.state.isEmpty}
+            keyboard={"true"}
             ampm={false}
+            variant="inline"
             label={floatingLabelText}
             value={this.state.value}
             onChange={this.handleChange}
             onError={console.log}
             disablePast={false}
-            format={"YYYY/MM/DD hh:mm A"}
-            mask={[
-              /\d/,
-              /\d/,
-              /\d/,
-              /\d/,
-              "/",
-              /\d/,
-              /\d/,
-              "/",
-              /\d/,
-              /\d/,
-              " ",
-              /\d/,
-              /\d/,
-              ":",
-              /\d/,
-              /\d/,
-            ]}
+            format={"YYYY-MM-DD HH:mm:ss"}
           />
-        </div>
-      </MuiPickersUtilsProvider>
+        </MuiPickersUtilsProvider>
+      </ThemeProvider>
     );
   }
 }

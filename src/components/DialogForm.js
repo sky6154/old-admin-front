@@ -6,7 +6,7 @@ import Dialog               from '@material-ui/core/Dialog';
 import Button               from '@material-ui/core/Button';
 import DialogTextField      from "./DialogTextField";
 import DialogDropDown       from "./DialogDropDown";
-import DialogToggle         from "./DialogSwitch";
+import DialogSwitch         from "./DialogSwitch";
 import DialogDatePicker     from "./DialogDatePicker";
 import DialogUpload         from "./DialogUpload";
 import DialogSearchDropDown from "./DialogSearchDropDown";
@@ -121,7 +121,7 @@ function createToggle(content, key, setValidateFunc, setValueFunc, formType, sel
   let label = (_.isNil(content.title)) ? "" : content.title;
   let dbColumnName = (_.isNil(content.dbColumnName)) ? "" : content.dbColumnName;
 
-  return <DialogToggle key={key} index={key} dbColumnName={dbColumnName} initialValue={_selectedData} label={label}
+  return <DialogSwitch key={key} index={key} dbColumnName={dbColumnName} initialValue={_selectedData} label={label}
                        defaultValue={content.defaultValue} setValidateFunc={setValidateFunc} setValueFunc={setValueFunc}
                        _onChange={_onChange} />;
 }
