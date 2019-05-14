@@ -246,11 +246,11 @@ class DialogSearchDropDown extends React.Component {
     this.props.setValidateFunc(this.props.index, isValidate);
 
     this.props.setValueFunc(this.props.index, {
-      [this.props.dbColumnName]: (_.isNil(selectedItem)) ? null : selectedItem.id
+      [this.props.dbColumnName]: (_.isNil(selectedItem)) ? null : selectedItem.value
     });
 
     if(_.isFunction(this.props._onChange)){
-      let val = (_.isNil(selectedItem)) ? null : selectedItem.id;
+      let val = (_.isNil(selectedItem)) ? null : selectedItem.value;
 
       let obj = {
         source : this.props.dbColumnName,
