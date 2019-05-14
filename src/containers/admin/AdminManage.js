@@ -132,16 +132,16 @@ export default class AdminManage extends React.Component {
           "update"
         ]
       },
-      // {
-      //   title       : "upload Title",
-      //   dbColumnName: "file_column",
-      //   hintText    : "upload Hint",
-      //   type        : "upload",
-      //   usage       : [
-      //     "insert",
-      //     "update"
-      //   ]
-      // },
+      {
+        title       : "upload Title",
+        dbColumnName: "file_column",
+        hintText    : "upload Hint",
+        type        : "upload",
+        usage       : [
+          "insert",
+          "update"
+        ]
+      },
       {
         title       : "searchDropDown",
         dbColumnName: "role",

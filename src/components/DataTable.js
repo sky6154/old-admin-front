@@ -226,15 +226,15 @@ class DataTable extends React.Component {
               let btnList = [];
 
               if(this.props.isAddable){
-                btnList.push(<Button key="0" onClick={() =>{this.insertCallback(this.props.insertClick)}}><AssignmentIcon /></Button>);
+                btnList.push(<Button style={{backgroundColor: "#4286f4"}} key="0" onClick={() =>{this.insertCallback(this.props.insertClick)}}><AssignmentIcon /></Button>);
               }
 
               if(this.props.isEditable){
-                btnList.push(<Button key="1" onClick={() =>{this.updateCallback(this.props.updateClick, this.getSelectedData())}}><EditIcon /></Button>);
+                btnList.push(<Button style={{backgroundColor: "#f7cf31"}} key="1" onClick={() =>{this.updateCallback(this.props.updateClick, this.getSelectedData())}}><EditIcon /></Button>);
               }
 
               if(this.props.isRemovable){
-                btnList.push(<Button key="2" onClick={() =>{
+                btnList.push(<Button style={{backgroundColor: "#f45b41"}} key="2" onClick={() =>{
                   if(this.getSelectedData().length !== 1){
                     Alert.info("삭제는 하나만 선택한 후 시도하여 주세요.", {
                       position: 'top-right',

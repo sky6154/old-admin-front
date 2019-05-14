@@ -14,7 +14,7 @@ const materialTheme = createMuiTheme({
       h4: {
         fontSize: "2rem" // 달력 폰트 사이즈.. 맞는거같은데 적용이 안된다. 알아봐야 함
       }
-    }
+    },
   }
 });
 

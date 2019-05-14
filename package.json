@@ -30,6 +30,7 @@
     "draft-js-video-plugin": "^2.0.1",
     "immutability-helper": "^2.9.1",
     "lodash": "^4.17.4",
+    "material-ui-dropzone": "^2.3.5",
     "moment": "^2.24.0",
     "npm": "^6.9.0",
     "prop-types": "^15.7.2",

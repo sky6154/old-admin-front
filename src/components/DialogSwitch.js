@@ -92,6 +92,7 @@ class DialogSwitch extends React.Component {
     return (
       <FormGroup row>
         <FormControlLabel
+          label={label}
           control={
             <Switch
               onChange={this.handleSwitch}
@@ -102,7 +103,6 @@ class DialogSwitch extends React.Component {
               }}
             />
           }
-          label={label}
         />
       </FormGroup>
     );

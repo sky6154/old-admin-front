@@ -1,16 +1,30 @@
 import React from "react";
 
-import _               from "lodash";
-import Dropzone, {useDropzone}        from "react-dropzone";
-import DialogTextField from "./DialogTextField";
-// import closeSvg                   from "material-design-icons/navigation/svg/production/ic_close_48px.svg";
+import _ from "lodash";
 
-import CloseIcon from '@material-ui/icons/Close';
 
-import {Button} from '@material-ui/core/Button';
-import Alert    from "react-s-alert";
-import RootRef  from "@material-ui/core/es/RootRef/RootRef";
-import Paper    from "@material-ui/core/es/Paper/Paper";
+import Alert            from "react-s-alert";
+import {DropzoneDialog} from 'material-ui-dropzone'
+import Button           from "@material-ui/core/es/Button/Button";
+import TextField        from "@material-ui/core/es/TextField/TextField";
+import FormControl      from "@material-ui/core/es/FormControl/FormControl";
+import withStyles       from "@material-ui/core/es/styles/withStyles";
+import CloseIcon        from '@material-ui/icons/Close';
+
+const styles = theme => ({
+  root       : {
+    display : 'flex',
+    flexWrap: 'wrap'
+  },
+  formControl: {
+    marginTop: theme.spacing(1.5),
+    display: 'inline-flex',
+    wrap   : 'wrap'
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2)
+  }
+});
 
 class DialogUpload extends React.Component {
   constructor(props){
@@ -22,23 +36,21 @@ class DialogUpload extends React.Component {
     }
   }
 
-  onDragEnter(){
-    this.setState({
-      dropzoneActive: true
-    });
+  componentWillReceiveProps(nextProps){
+    if(!_.isNil(nextProps.mimeTypes)){
+      this.setState({
+        accept: nextProps.mimeTypes
+      });
+    }
   }
 
-  onDragLeave(){
+  handleClose = () =>{
     this.setState({
       dropzoneActive: false
     });
-  }
+  };
 
-  onDropAccepted(){
-
-  }
-
-  onDropRejected(){
+  onDropRejected(files){
     let {mimeTypes} = this.props;
     Alert.error(`${mimeTypes}에 해당하는 파일만 업로드해주세요.`, {
       position: 'top-right',
@@ -47,7 +59,7 @@ class DialogUpload extends React.Component {
     });
   }
 
-  onDrop(files){
+  handleSave = (files) =>{
     let {isSingleUpload} = this.props;
 
     let value = '';
@@ -114,55 +126,57 @@ class DialogUpload extends React.Component {
         dropzoneActive: false
       });
     }
-  }
+  };
 
-  componentWillReceiveProps(nextProps){
-    if(!_.isNil(nextProps.mimeTypes)){
-      this.setState({
-        accept: nextProps.mimeTypes
-      });
-    }
-  }
+  handleOpen = () =>{
+    this.setState({
+      dropzoneActive: true,
+    });
+  };
+
+  handleReset = () =>{
+    this.setState({
+      files: []
+    });
+  };
 
   render(){
+    const {classes, initialValue, hintText, floatingLabelText, multiLine, isRequired, dbColumnName, setValidateFunc, setValueFunc, value} = this.props;
     const {accept, files, dropzoneActive} = this.state;
-    const overlayStyle = {
-      position  : 'absolute',
-      top       : 0,
-      right     : 0,
-      bottom    : 0,
-      left      : 0,
-      padding   : '2.5em 0',
-      background: 'rgba(0,0,0,0.5)',
-      textAlign : 'center',
-      color     : '#fff',
-      zIndex    : 1000
-    };
 
-    let {initialValue, hintText, floatingLabelText, multiLine, isRequired, dbColumnName, setValidateFunc, setValueFunc, value} = this.props;
+    return <form className={classes.root} autoComplete="off">
+      <FormControl className={classes.formControl}>
+        {floatingLabelText}
+      </FormControl>
+      <FormControl className={classes.formControl}>
+        {
+          files.map((f, index) =>{
+            let fileName = f.name;
 
-    const style = {
-      width: "40%"
-    };
+            if(f.name.length > 25){
+              fileName = f.name.substr(0, 25);
+              fileName = fileName.concat('...');
+            }
 
-    let dropzoneRef;
-
-    const {getRootProps, getInputProps} = useDropzone();
-    const {ref, ...rootProps} = getRootProps();
-
-    /**
-     * TODO Material ui 및 dropzone 업데이트 하면서 버전업에 따른 사용방법 변경으로
-     * 올바르게 사용되게 수정해야 함.
-    */
-
-    return (
-      <RootRef rootRef={ref}>
-        <Paper {...rootProps}>
-          <input {...getInputProps()} />
-          <p>Drag 'n' drop some files here, or click to select files</p>
-        </Paper>
-      </RootRef>
-    );
+            return (<li key={index} style={{fontSize: "12px"}}>{fileName} - {f.size} bytes</li>);
+          })}
+      </FormControl>
+      <FormControl className={classes.formControl}>
+        <Button onClick={this.handleReset}><CloseIcon /></Button>
+      </FormControl>
+      <FormControl className={classes.formControl}>
+        <Button onClick={this.handleOpen}>찾아보기</Button>
+      </FormControl>
+      <DropzoneDialog
+        open={this.state.dropzoneActive}
+        onSave={this.handleSave}
+        acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
+        showPreviews={true}
+        maxFileSize={5000000}
+        onClose={this.handleClose}
+        onDropRejected={this.onDropRejected}
+      />
+    </form>
 
 
     // return (
@@ -227,4 +241,4 @@ class DialogUpload extends React.Component {
 
 }
 
-export default DialogUpload;
+export default withStyles(styles)(DialogUpload);
