@@ -14,6 +14,7 @@ import withStyles           from "@material-ui/core/es/styles/withStyles";
 import DialogTitle          from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent        from "@material-ui/core/es/DialogContent/DialogContent";
 import DialogActions        from "@material-ui/core/es/DialogActions/DialogActions";
+import Grid                 from "@material-ui/core/es/Grid/Grid";
 
 // obj[key] == object 일 경우 반환하지 않는다.
 function findValueByKeyDepth(obj, key){
@@ -34,64 +35,6 @@ function findValueByKeyDepth(obj, key){
     }
   }
   return undefined;
-}
-
-
-export function createForm(crudFormInfo, formType, setValidateFunc, setValueFunc, selectedData, isStepper, valueList, _onChange){
-  let form = [];
-  let left = [];
-  let right = [];
-
-  if(!_.isNil(crudFormInfo)){
-    _.map(crudFormInfo, (item, index) =>{
-      let isInclude = item.usage.includes(formType);
-
-      if(isInclude){
-        let type = _.toLower(item.type);
-        let target;
-
-        if(index % 2 === 0){
-          target = left;
-        }else{
-          target = right;
-        }
-
-        switch(type){
-          case "text":
-          case "textfield":
-            target.push(createText(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange));
-            break;
-          case "datepicker":
-            target.push(createDatePicker(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange));
-            break;
-          case "dropdown":
-            target.push(createDropDown(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange));
-            break;
-          case "toggle":
-            target.push(createToggle(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange));
-            break;
-          case "upload":
-            target.push(createUpload(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, valueList, _onChange));
-            break;
-          case "searchdropdown":
-            target.push(createSearchDropDown(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange));
-            break;
-          default :
-            break;
-        }
-      }
-    });
-  }
-
-  const style = {
-    width: "46%",
-    float: "left"
-  };
-
-  form.push([<div style={style} key="0">{left}</div>]);
-  form.push([<div style={style} key="1">{right}</div>]);
-
-  return form;
 }
 
 function createDatePicker(content, key, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange){
@@ -173,7 +116,14 @@ function createSearchDropDown(content, key, setValidateFunc, setValueFunc, formT
 }
 
 const styles = theme => ({
-
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
 });
 
 class DialogForm extends React.Component {
@@ -188,10 +138,6 @@ class DialogForm extends React.Component {
         __files: {}
       }
     };
-
-    this.setValidate = this.setValidate.bind(this);
-    this.setValue = this.setValue.bind(this);
-    this.isEmpty = this.isEmpty.bind(this);
   }
 
   handleSubmit = () =>{
@@ -231,14 +177,14 @@ class DialogForm extends React.Component {
     });
   }
 
-  setValidate(index, isValidate){
+  setValidate = (index, isValidate) => {
     this.setState({
       validateList: Object.assign(this.state.validateList, {[index]: isValidate}),
       isValidate  : this.isEmpty(this.state.validateList)
     });
-  }
+  };
 
-  setValue(index, value){
+  setValue = (index, value) => {
     let __files = this.state.valueList['__files'];
 
     if(!_.isNil(value['__files'])){
@@ -250,9 +196,9 @@ class DialogForm extends React.Component {
     this.setState({
       valueList: Object.assign(this.state.valueList, value)
     });
-  }
+  };
 
-  isEmpty(validateList){
+  isEmpty = (validateList) => {
     for(var o in validateList){
       if(!validateList[o]){
         return false;
@@ -260,9 +206,52 @@ class DialogForm extends React.Component {
     }
 
     return true;
-  }
+  };
+
+  createForm = (crudFormInfo, formType, setValidateFunc, setValueFunc, selectedData, isStepper, valueList, _onChange) => {
+    let list = [];
+    const xs = 6;
+
+    if(!_.isNil(crudFormInfo)){
+      _.map(crudFormInfo, (item, index) =>{
+        let isInclude = item.usage.includes(formType);
+
+        if(isInclude){
+          let type = _.toLower(item.type);
+
+          switch(type){
+            case "text":
+            case "textfield":
+              list.push(<Grid item xs={xs} key={index}>{createText(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange)}</Grid>);
+              break;
+            case "datepicker":
+              list.push(<Grid item xs={xs} key={index}>{createDatePicker(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange)}</Grid>);
+              break;
+            case "dropdown":
+              list.push(<Grid item xs={xs} key={index}>{createDropDown(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange)}</Grid>);
+              break;
+            case "toggle":
+              list.push(<Grid item xs={xs} key={index}>{createToggle(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange)}</Grid>);
+              break;
+            case "upload":
+              list.push(<Grid item xs={xs} key={index}>{createUpload(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, valueList, _onChange)}</Grid>);
+              break;
+            case "searchdropdown":
+              list.push(<Grid item xs={xs} key={index}>{createSearchDropDown(item, index, setValidateFunc, setValueFunc, formType, selectedData, isStepper, _onChange)}</Grid>);
+              break;
+            default :
+              break;
+          }
+
+        }
+      });
+    }
+
+    return list;
+  };
 
   render(){
+    const {classes} = this.props;
     const title = (_.isNil(this.props.formTitle)) ? "Default Title" : this.props.formTitle;
     const isStepper = false;
 
@@ -270,8 +259,6 @@ class DialogForm extends React.Component {
       <Button key={0} primary={"true"} onClick={this.handleClose}>Cancel</Button>,
       <Button key={1} primary={"true"} disabled={!this.state.isValidate} onClick={this.handleSubmit}>Submit</Button>
     ];
-
-    const {classes} = this.props;
 
     return (
       <div>
@@ -284,7 +271,11 @@ class DialogForm extends React.Component {
         >
           <DialogTitle>{title}</DialogTitle>
           <DialogContent>
-            {createForm(this.props.crudFormInfo, this.props.formType, this.setValidate, this.setValue, this.props.selectedData, isStepper, this.state.valueList, this.props._onChange)}
+            <div className={classes.root}>
+              <Grid container spacing={1}>
+                {this.createForm(this.props.crudFormInfo, this.props.formType, this.setValidate, this.setValue, this.props.selectedData, isStepper, this.state.valueList, this.props._onChange)}
+              </Grid>
+            </div>
           </DialogContent>
           <DialogActions>
             {actions}

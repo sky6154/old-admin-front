@@ -113,6 +113,8 @@ class DialogDatePicker extends React.Component {
             onError={console.log}
             disablePast={false}
             format={"YYYY-MM-DD HH:mm:ss"}
+            helperText={hintText}
+            fullWidth={true}
           />
         </MuiPickersUtilsProvider>
       </ThemeProvider>

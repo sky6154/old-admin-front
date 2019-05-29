@@ -145,7 +145,7 @@ class DialogUpload extends React.Component {
     const {accept, files, dropzoneActive} = this.state;
 
     return <form className={classes.root} autoComplete="off">
-      <FormControl className={classes.formControl}>
+      <FormControl className={classes.formControl} style={{padding: "3px"}}>
         {floatingLabelText}
       </FormControl>
       <FormControl className={classes.formControl}>

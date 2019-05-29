@@ -97,10 +97,6 @@ class DialogSwitch extends React.Component {
             <Switch
               onChange={this.handleSwitch}
               checked={this.state.value === this.state.defaultValue.active}
-              style={{
-                marginTop   : "10%",
-                marginBottom: "3%"
-              }}
             />
           }
         />
