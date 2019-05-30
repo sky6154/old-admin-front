@@ -54,3 +54,24 @@ export const authCheckApi = () =>{
       // }
     });
 };
+
+export const getAdminAllApi = () =>{
+  const apiServer = getApiServer();
+
+  console.log("GET ALL ADMIN CALL");
+  const fullUrl = `${apiServer}/admin/getAllAdmin`;
+
+  return axios.get(fullUrl, createCommonRequest())
+    .then((res) =>{
+      return res.data;
+    })
+    .catch((err) =>{
+      // switch(err.response.status){
+      //   case 401:
+      //
+      //     break;
+      //   default:
+      //     throw err;
+      // }
+    });
+};

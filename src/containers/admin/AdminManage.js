@@ -1,17 +1,26 @@
-import React  from 'react';
-import _      from "lodash";
-import moment from "moment";
+import React        from 'react';
+import {connect}    from "react-redux";
+import {withRouter} from "react-router";
+import _            from "lodash";
+import moment       from "moment";
 
 import {permissionCheck, Role} from "../../config/Role";
 import CreateTable             from "../../components/CreateTable";
 
-export default class AdminManage extends React.Component {
+import {getAllAdminTrigger} from "../../redux/actions/account";
+
+
+class AdminManage extends React.Component {
   constructor(props){
     super(props);
 
     let requiredRoles = [Role.ROLE_ADMIN];
 
     permissionCheck(requiredRoles, this.props.history);
+  }
+
+  componentWillMount(){
+    this.props.getAllAdminTrigger();
   }
 
   insertCallback = (data) =>{
@@ -28,7 +37,7 @@ export default class AdminManage extends React.Component {
 
 
   render(){
-    const {isAllAdminFetching, allAdminList} = this.props;
+    const {isAllAdminFetching, adminList} = this.props;
 
     const replaceValue = {
       "someType"  : {
@@ -38,7 +47,7 @@ export default class AdminManage extends React.Component {
       },
       "someToggle": {
         disactive: "FALSE",
-        active: "TRUE"
+        active   : "TRUE"
       }
     };
 
@@ -48,7 +57,7 @@ export default class AdminManage extends React.Component {
         columns: [
           {
             Header  : "운영자 ID",
-            accessor: "user_id"
+            accessor: "id"
           }
         ]
       },
@@ -62,7 +71,7 @@ export default class AdminManage extends React.Component {
           {
             Header  : "권한",
             id      : "role",
-            accessor: data => (!_.isNil(replaceValue["role"][data.role])) ? replaceValue["role"][data.role] : data.role
+            // accessor: data => (!_.isNil(replaceValue["role"][data.role])) ? replaceValue["role"][data.role] : data.role
           },
           {
             Header  : "마지막 로그인",
@@ -163,10 +172,21 @@ export default class AdminManage extends React.Component {
     let isFetching = (isAllAdminFetching);
 
     return (
-      <CreateTable isFetching={isFetching} tableData={allAdminList} columns={columns} defaultSorted={defaultSorted}
+      <CreateTable isFetching={isFetching} tableData={adminList} columns={columns} defaultSorted={defaultSorted}
                    crudFormInfo={crudFormInfo} isCheckable={true} isAddable={true} isEditable={true} isRemovable={true}
                    insertFormTitle={insertFormTitle} updateFormTitle={updateFormTitle}
                    insertCallback={this.insertCallback}
                    updateCallback={this.updateCallback} deleteCallback={this.deleteCallback} />);
   }
 }
+
+function mapStateToProps(state){
+  return {
+    adminList         : state.account.adminList,
+    isAllAdminFetching: state.account.isAllAdminFetching
+  };
+}
+
+export default withRouter(connect(mapStateToProps, {
+  getAllAdminTrigger
+})(AdminManage));

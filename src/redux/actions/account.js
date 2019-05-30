@@ -15,3 +15,9 @@ export const AUTH_CHECK = createActionTypes('AUTH_CHECK');
 export const authCheck = createSagaAction(AUTH_CHECK);
 export const AUTH_CHECK_TRIGGER = 'AUTH_CHECK_TRIGGER';
 export const authCheckTrigger = (req, requiredFields = []) => createActionCreator(AUTH_CHECK_TRIGGER, {req, requiredFields});
+
+
+export const GET_ALL_ADMIN = createActionTypes('GET_ALL_ADMIN');
+export const getAllAdmin = createSagaAction(GET_ALL_ADMIN);
+export const GET_ALL_ADMIN_TRIGGER = 'GET_ALL_ADMIN_TRIGGER';
+export const getAllAdminTrigger = (req, requiredFields = []) => createActionCreator(GET_ALL_ADMIN_TRIGGER, {req, requiredFields});
