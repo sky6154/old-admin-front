@@ -8,7 +8,7 @@ export const uploadImageApi = req =>{
   const apiServer = getApiServer();
 
   console.log("UPLOAD IMAGE API CALL");
-  const fullUrl = `${apiServer}/post/fileUpload`;
+  const fullUrl = `${apiServer}/post/uploadFile`;
 
   return axios.post(fullUrl, req, createCommonRequest())
     .then((res) =>{
@@ -38,7 +38,7 @@ export const uploadPostApi = req =>{
   const apiServer = getApiServer();
 
   console.log("UPLOAD POST API CALL");
-  const fullUrl = `${apiServer}/post/uploadPost`;
+  const fullUrl = `${apiServer}/post/${req.boardId}`;
 
   let jsonData = JSON.stringify(req);
 

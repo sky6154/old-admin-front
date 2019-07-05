@@ -8,7 +8,7 @@ export const fetchBoardListApi = req =>{
   const apiServer = getApiServer();
 
   console.log("FETCH BOARD LIST API CALL");
-  const fullUrl = `${apiServer}/board/getBoardList`;
+  const fullUrl = `${apiServer}/board/list`;
 
   return axios.get(fullUrl, createCommonRequest())
     .then((res) =>{

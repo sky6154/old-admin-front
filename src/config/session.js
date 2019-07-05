@@ -45,7 +45,14 @@ export function updateRole(role){
 }
 
 export function getToken(){
-  return cookies.get(TOKEN_NAME);
+  let token = cookies.get(TOKEN_NAME);
+
+  if(typeof token === "undefined"){
+    return null;
+  }
+  else{
+    return token;
+  }
 }
 
 export function getRole(){

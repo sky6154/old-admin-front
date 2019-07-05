@@ -59,7 +59,7 @@ export const getAdminAllApi = () =>{
   const apiServer = getApiServer();
 
   console.log("GET ALL ADMIN CALL");
-  const fullUrl = `${apiServer}/admin/getAllAdmin`;
+  const fullUrl = `${apiServer}/admin/list`;
 
   return axios.get(fullUrl, createCommonRequest())
     .then((res) =>{
