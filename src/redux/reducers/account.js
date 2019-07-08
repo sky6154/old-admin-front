@@ -1,8 +1,7 @@
 import * as actionTypes                       from '../actions/account';
 import createReducer                          from '../utils/createReducer';
 import Alert                                  from 'react-s-alert';
-import _                                      from "lodash";
-import {removeSessionInfo, insertSessionInfo} from "../../config/session";
+import {insertSessionInfo, removeSessionInfo} from "../../config/session";
 
 const initialState = {
   isLoginRequesting    : false,
@@ -15,7 +14,10 @@ const initialState = {
 
 const actionHandlers = {
   [actionTypes.LOGIN.REQUEST]: (state, action) =>{
-    return Object.assign({}, state, {isLoginRequesting: true});
+    return Object.assign({}, state, {
+      isLoginRequesting: true,
+      isLogin          : false
+    });
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) =>{
     // const isLogin = action.data;
@@ -92,7 +94,8 @@ const actionHandlers = {
     removeSessionInfo();
 
     return Object.assign({}, state, {
-      isFetchBoardListRequesting: false
+      isFetchBoardListRequesting: false,
+      isLogin                   : false
     });
   },
 
@@ -105,7 +108,7 @@ const actionHandlers = {
 
     return Object.assign({}, state, {
       isAllAdminFetching: false,
-      adminList                   : adminList
+      adminList         : adminList
     });
   },
   [actionTypes.GET_ALL_ADMIN.FAILURE]: (state, action) =>{

@@ -12,7 +12,7 @@ export const Role = Object.freeze({
 
 export const permissionCheck = (requiredPermissions, history) =>{
   if(_.isNil(getToken())){
-    history.replace("/login")
+    history.replace("/login");
   }
   else if(!Array.isArray(requiredPermissions)){
     throw "Arguments must be a array";

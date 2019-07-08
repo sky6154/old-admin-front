@@ -16,6 +16,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import {loginTrigger} from "../redux/actions/account";
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
+import Alert from 'react-s-alert';
 
 const styles = theme => ({
     main: {
@@ -54,26 +55,38 @@ class Login extends React.Component {
         super(props);
 
         this.state = {
-            isLogged: false,
-            id: '',
+            isLogin : false,
+            id      : '',
             password: ''
         };
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if(props.isLogin){
-            props.history.push("/");
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if(nextProps.isLogin !== prevState.isLogin){
+            return {
+                isLogin : nextProps.isLogin
+            }
         }
 
         return null;
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+        if(nextState.isLogin){
+            this.props.history.replace("/");
+
+            return false;
+        }
+
+        return true;
+    }
+
     componentWillUnmount(){
         this.setState({
-            isLogged: false,
-            id: '',
+            isLogin : false,
+            id      : '',
             password: ''
         });
     }
@@ -142,6 +155,7 @@ class Login extends React.Component {
                         </Button>
                     </form>
                 </Paper>
+                <Alert stack={{limit: 3}} />
             </main>
         );
     }
