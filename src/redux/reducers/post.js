@@ -20,40 +20,11 @@ const actionHandlers = {
         return Object.assign({}, state, {isImageUploading: true});
     },
     [actionTypes.UPLOAD_IMAGE.SUCCESS]: (state, action) => {
-        const imageUploadResult = action.data;
-        let isAllImageUploaded = true;
-        let imageUploadInfo = [];
-        let isPostProgress = true;
-
-        _.forEach(imageUploadResult, function (value, key) {
-            // 게시글에 이미지를 올리지 않음
-            if (!_.isNil(value) && value.code == -1) {
-
-            }
-            else if (!_.isNil(value) && value.code != 1) {
-                isAllImageUploaded = false;
-                isPostProgress = false;
-
-                Alert.error(value.message, {
-                    position: 'top-right',
-                    effect: 'slide',
-                    timeout: 3000
-                });
-
-                imageUploadInfo = [];
-
-                return false;
-            }
-            else {
-                imageUploadInfo[key] = value.additional
-            }
-        });
-
         return Object.assign({}, state, {
             isImageUploading: false,
-            step1IsAllImageUploaded: isAllImageUploaded,
-            imageUploadInfo: imageUploadInfo,
-            isPostProgress: isPostProgress
+            step1IsAllImageUploaded: true,
+            imageUploadInfo: action.data,
+            isPostProgress: true
         });
     },
     [actionTypes.UPLOAD_IMAGE.FAILURE]: (state, action) => {
