@@ -81,7 +81,7 @@ const actionHandlers = {
 
     return Object.assign({}, state, {
       isFetchBoardListRequesting: false,
-      isLogin                   : isLogin
+      isLogin                   : true
     });
   },
   [actionTypes.AUTH_CHECK.FAILURE]: (state, action) =>{
