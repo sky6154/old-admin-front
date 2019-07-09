@@ -34,7 +34,7 @@ const actionHandlers = {
             timeout: 3000
         });
 
-        removeSessionInfo();
+        // removeSessionInfo();
 
         // ...initialkState 가 아니라 그냥 전체 Post쪽 정보를 초기화 한다.
         return Object.assign({}, state, initialState);
@@ -69,7 +69,7 @@ const actionHandlers = {
         });
     },
     [actionTypes.UPLOAD_POST.FAILURE]: (state, action) => {
-        removeSessionInfo();
+        // removeSessionInfo();
 
         return Object.assign({}, state, initialState);
     },

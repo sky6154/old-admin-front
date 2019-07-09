@@ -235,29 +235,39 @@ class MyEditor extends React.Component {
     let formData = new FormData();
 
     if(!_.isNil(entityMap)){
+      let isBase64 = new RegExp("data:image\\/([a-zA-Z]*);base64,([^\"]*)");
+
       Object.keys(entityMap).map(function (key){
-        let data = entityMap[key].data.src;
-        let block = data.split(";");
+        if(isBase64.test(entityMap[key].data.src)){
+          let data = entityMap[key].data.src;
+          let block = data.split(";");
 
-        let contentType = block[0].split(":")[1]; // ex) "image/gif"
-        let realData = block[1].split(",")[1]; // ex) "R0lGODlhPQBEAPeoAJosM...."
+          let contentType = block[0].split(":")[1]; // ex) "image/gif"
+          let realData = block[1].split(",")[1]; // ex) "R0lGODlhPQBEAPeoAJosM...."
 
-        let fileFormat = contentType.split("/")[1]; // ex) png
-        let fileName = parseInt(key) + 1;
+          let fileFormat = contentType.split("/")[1]; // ex) png
+          let fileName = parseInt(key) + 1;
 
-        let blob = base64ToBlob(realData, contentType);
-        // blob에 아래 두 properties를 추가하면 file과 같은 형태가 된다.
-        blob.lastModifiedDate = new Date();
-        blob.contentType = contentType;
+          let blob = base64ToBlob(realData, contentType);
+          // blob에 아래 두 properties를 추가하면 file과 같은 형태가 된다.
+          blob.lastModifiedDate = new Date();
+          blob.contentType = contentType;
 
-        let file = new File([blob], fileName + '.' + fileFormat);
+          let file = new File([blob], fileName + '.' + fileFormat);
 
-        formData.append('files', file);
+          formData.append('files', file);
+        }
       });
 
+      //
       // 버튼 다시 못누르게 이미지 업로드가 아니라 포스팅 진행중일때로 한다.
       if(!this.props.isPostProgress){
-        this.props.uploadImageTrigger(formData);
+        let req = {
+          boardId : this.state.boardId,
+          files : formData
+        };
+
+        this.props.uploadImageTrigger(req);
       }
       else{
         Alert.warning("작업 진행중 입니다.", {

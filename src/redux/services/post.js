@@ -8,9 +8,14 @@ export const uploadImageApi = req =>{
   const apiServer = getApiServer();
 
   console.log("UPLOAD IMAGE API CALL");
-  const fullUrl = `${apiServer}/post/uploadFile`;
 
-  return axios.post(fullUrl, req, createCommonRequest())
+  if(_.isNil(req)){
+    throw new Error("req is not exist");
+  }
+
+  const fullUrl = `${apiServer}/post/uploadFile/${req.boardId}`;
+
+  return axios.post(fullUrl, req.files, createCommonRequest())
     .then((res) =>{
       return res.data;
     })
@@ -20,22 +25,37 @@ export const uploadImageApi = req =>{
 };
 
 export const replaceImageSrcFunc = req => {
+  if(_.isNil(req)){
+    throw new Error("req is not exist");
+  }
+
   let cursor = 0;
   let limit = req.fileInfo.length;
+  let isBase64 = new RegExp("data:image\\/([a-zA-Z]*);base64,([^\"]*)");
 
   Object.keys(req.entityMap).map(function (key){
-    if(req.entityMap[key].type === "image"){
+    // if(req.entityMap[key].type === "image"){
+
+    if(isBase64.test(req.entityMap[key].data.src)){
       if(cursor <= limit){
         let filePath = req.fileInfo[cursor].path + req.fileInfo[cursor].fileName;
         req.entityMap[key].data.src = filePath;
+
+        cursor++;
       }
     }
+
+    // }
   });
-}
+};
 
 
 export const uploadPostApi = req =>{
   const apiServer = getApiServer();
+
+  if(_.isNil(req)){
+    throw new Error("req is not exist");
+  }
 
   console.log("UPLOAD POST API CALL");
   const fullUrl = `${apiServer}/post/${req.boardId}`;
