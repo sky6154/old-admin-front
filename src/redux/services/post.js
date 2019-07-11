@@ -70,3 +70,20 @@ export const uploadPostApi = req =>{
       throw err;
     });
 };
+
+
+
+export const fetchPostListApi = req =>{
+  const apiServer = getApiServer();
+
+  console.log("FETCH POST LIST API CALL");
+  const fullUrl = `${apiServer}/post/list/${req.boardId}`;
+
+  return axios.get(fullUrl, createCommonRequest())
+    .then((res) =>{
+      return res.data;
+    })
+    .catch((err) =>{
+      throw err;
+    });
+};

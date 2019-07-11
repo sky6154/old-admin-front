@@ -23,3 +23,9 @@ export const REMOVE_STATE = createActionTypes('REMOVE_STATE');
 export const removeState = createSagaAction(REMOVE_STATE);
 export const REMOVE_STATE_TRIGGER = 'REMOVE_STATE_TRIGGER';
 export const removeStateTrigger = (req, requiredFields = []) => createActionCreator(REMOVE_STATE_TRIGGER, {req, requiredFields});
+
+
+export const FETCH_POST_LIST = createActionTypes('FETCH_POST_LIST');
+export const fetchPostList = createSagaAction(FETCH_POST_LIST);
+export const FETCH_POST_LIST_TRIGGER = 'FETCH_POST_LIST_TRIGGER';
+export const fetchPostListTrigger = (req, requiredFields = []) => createActionCreator(FETCH_POST_LIST_TRIGGER, {req, requiredFields});

@@ -52,7 +52,6 @@ import {stateToHTML}   from 'draft-js-export-html';
 import base64ToBlob    from '../utils/base64ToBlob';
 
 import {uploadImageTrigger, replaceImageSrcTrigger, uploadPostTrigger, removeStateTrigger} from "../redux/actions/post";
-import {fetchBoardListTrigger}                                                             from "../redux/actions/board";
 import Alert                                                                               from "react-s-alert";
 import TextField                                                                           from "@material-ui/core/es/TextField/TextField";
 import MenuItem                                                                            from "@material-ui/core/es/MenuItem/MenuItem";
@@ -94,7 +93,6 @@ class MyEditor extends React.Component {
 
     this.state = {
       editorState: EditorState.createEmpty(),
-      boardId    : -1,
       title      : ''
     };
   }
@@ -146,9 +144,9 @@ class MyEditor extends React.Component {
   //   return null;
   // }
 
-  static getDerivedStateFromProps(props, state) {
-    if(props.isPostProgress && props.step1IsAllImageUploaded && props.step2IsDoneReplaceSrc && props.step3IsPostUpload){
-      const editorState = EditorState.push(state.editorState, ContentState.createFromText(''));
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(nextProps.isPostProgress && nextProps.step1IsAllImageUploaded && nextProps.step2IsDoneReplaceSrc && nextProps.step3IsPostUpload){
+      const editorState = EditorState.push(prevState.editorState, ContentState.createFromText(''));
 
       return {
         editorState : editorState,
@@ -158,16 +156,9 @@ class MyEditor extends React.Component {
 
     return null;
   }
-
-  componentDidMount(){
-    this.props.fetchBoardListTrigger();
-  }
-
   componentDidUpdate(prevProps, prevState, snapshot){
-    if(this.state.boardId === -1 && !_.isNil(this.props.boardList) && !_.isEmpty(this.props.boardList)){
-      this.setState({boardId : this.props.boardList[0].boardId});
-    }
 
+    // 현재 공통된 saga 로직을 사용하고 있어서 글쓰기에 맞는 saga 로직으로 변경해야 함
     if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc && this.props.step3IsPostUpload){
       console.log("STEP 3");
       this.props.removeStateTrigger();
@@ -195,40 +186,8 @@ class MyEditor extends React.Component {
     // 이후 handling ..?
   }
 
-  handleTargetBoard = () => event =>{
-    this.setState({boardId: event.target.value});
-  };
-
   handleTitle = (event) =>{
     this.setState({title: event.target.value});
-  };
-
-  printBoardList = (boardList) =>{
-    if(!_.isNil(boardList) && boardList.length > 0){
-
-      return <TextField
-        id="outlined-select-currency"
-        select
-        label="Board list"
-        className={"textField"}
-        value={this.state.boardId}
-        onChange={this.handleTargetBoard()}
-        SelectProps={{
-          MenuProps: {
-            className: "menu",
-          },
-        }}
-        margin="normal"
-        variant="outlined"
-        style={{width: 200}}
-      >
-          {boardList.map(boardInfo => (
-            <MenuItem key={boardInfo.description} value={boardInfo.boardId}>
-              {boardInfo.description}
-            </MenuItem>
-          ))}
-        </TextField>;
-    }
   };
 
   uploadImages = (entityMap) =>{
@@ -263,7 +222,7 @@ class MyEditor extends React.Component {
       // 버튼 다시 못누르게 이미지 업로드가 아니라 포스팅 진행중일때로 한다.
       if(!this.props.isPostProgress){
         let req = {
-          boardId : this.state.boardId,
+          boardId : this.props.boardId,
           files : formData
         };
 
@@ -306,7 +265,7 @@ class MyEditor extends React.Component {
     let content = stateToHTML(this.state.editorState.getCurrentContent());
 
     let req = {
-      boardId: this.state.boardId,
+      boardId: this.props.boardId,
       title  : this.state.title,
       content: content
     };
@@ -326,12 +285,8 @@ class MyEditor extends React.Component {
   };
 
   render(){
-    let boardListDropDown = this.printBoardList(this.props.boardList);
-
     return (
       <div>
-        {boardListDropDown}
-
         <TextField
           id="standard-full-width"
           label="제목"
@@ -453,9 +408,7 @@ MyEditor.defaultProps = {
   step1IsAllImageUploaded   : false,
   step2IsDoneReplaceSrc     : false,
   step3IsPostUpload         : false,
-  imageUploadInfo           : [],
-  isFetchBoardListRequesting: false,
-  boardList                 : []
+  imageUploadInfo           : []
 };
 
 MyEditor.propTypes = {
@@ -466,9 +419,7 @@ MyEditor.propTypes = {
   step1IsAllImageUploaded   : PropTypes.bool.isRequired,
   step2IsDoneReplaceSrc     : PropTypes.bool.isRequired,
   step3IsPostUpload         : PropTypes.bool.isRequired,
-  imageUploadInfo           : PropTypes.array.isRequired,
-  isFetchBoardListRequesting: PropTypes.bool.isRequired,
-  boardList                 : PropTypes.array.isRequired
+  imageUploadInfo           : PropTypes.array.isRequired
 };
 
 function mapStateToProps(state){
@@ -480,13 +431,10 @@ function mapStateToProps(state){
     step1IsAllImageUploaded   : state.post.step1IsAllImageUploaded,
     step2IsDoneReplaceSrc     : state.post.step2IsDoneReplaceSrc,
     step3IsPostUpload         : state.post.step3IsPostUpload,
-    imageUploadInfo           : state.post.imageUploadInfo,
-    isFetchBoardListRequesting: state.board.isFetchBoardListRequesting,
-    boardList                 : state.board.boardList
+    imageUploadInfo           : state.post.imageUploadInfo
   };
 }
 
 export default withRouter(connect(mapStateToProps, {
-  uploadImageTrigger, replaceImageSrcTrigger, uploadPostTrigger, removeStateTrigger,
-  fetchBoardListTrigger
+  uploadImageTrigger, replaceImageSrcTrigger, uploadPostTrigger, removeStateTrigger
 })(MyEditor));

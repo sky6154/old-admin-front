@@ -6,13 +6,14 @@ import {Collapse, List, ListItem, ListItemIcon, ListItemText, ListSubheader} fro
 
 import { withStyles } from '@material-ui/core/styles';
 
-import FaceIcon from '@material-ui/icons/Face';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import SettingsIcon from '@material-ui/icons/Settings';
+import FaceIcon        from '@material-ui/icons/Face';
+import AssignmentIcon  from '@material-ui/icons/Assignment';
+import AccessTimeIcon  from '@material-ui/icons/AccessTime';
+import SettingsIcon    from '@material-ui/icons/Settings';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import ExpandLess      from '@material-ui/icons/ExpandLess';
+import ExpandMore      from '@material-ui/icons/ExpandMore';
+import Create          from "@material-ui/icons/esm/Create";
 
 const styles = theme => ({
   root: {
@@ -69,9 +70,15 @@ class Menu extends React.Component {
 
         <Collapse in={this.state.isPostFoldOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItem button key={"게시글 관리"} className={classes.nested}>
-              <ListItemIcon><AssignmentIcon /></ListItemIcon>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon><Create /></ListItemIcon>
               <ListItemText primary={"게시글 작성"} onClick={() =>{
+                this.goTo("/post/postWrite");
+              }} />
+            </ListItem>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon><AssignmentIcon /></ListItemIcon>
+              <ListItemText primary={"게시글 관리"} onClick={() =>{
                 this.goTo("/post/postManage");
               }} />
             </ListItem>
