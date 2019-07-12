@@ -17,7 +17,8 @@ class PostManage extends React.Component {
     super(props);
 
     this.state = {
-      boardId: -1
+      boardId: -1,
+      isFirst: true
     };
 
     let requiredRoles = [Role.ROLE_ADMIN, Role.ROLE_BLOG];
@@ -26,21 +27,51 @@ class PostManage extends React.Component {
   }
 
   componentDidMount(){
-    let req = {
-      boardId: this.state.boardId
-    };
     this.props.fetchBoardListTrigger();
-    this.props.fetchPostListTrigger(req);
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState){
+    // 여기서는 setState 를 하는 것이 아니라
+    // 특정 props 가 바뀔 때 설정하고 설정하고 싶은 state 값을 리턴하는 형태로
+    // 사용됩니다.
+    /*
+    if (nextProps.value !== prevState.value) {
+      return { value: nextProps.value };
+    }
+    return null; // null 을 리턴하면 따로 업데이트 할 것은 없다라는 의미
+    */
+
+    if(prevState.boardId === -1 && !_.isNil(nextProps.boardList) && !_.isEmpty(nextProps.boardList)){
+      return {
+        boardId: nextProps.boardList[0].boardId
+      }
+    }
+
+    return null;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot){
-    if(this.state.boardId === -1 && !_.isNil(this.props.boardList) && !_.isEmpty(this.props.boardList)){
-      this.setState({boardId: this.props.boardList[0].boardId});
+    if(!_.isNil(this.props.fetchPostListTrigger) && this.state.boardId > 0 && this.state.isFirst){
+      let req = {
+        boardId: this.state.boardId
+      };
+
+      this.props.fetchPostListTrigger(req);
+
+      this.setState({
+        isFirst: false
+      });
     }
   }
 
   handleTargetBoard = () => event =>{
     this.setState({boardId: event.target.value});
+
+    let req = {
+      boardId: event.target.value
+    };
+
+    this.props.fetchPostListTrigger(req);
   };
 
   printBoardList = (boardList) =>{
@@ -74,37 +105,43 @@ class PostManage extends React.Component {
   render(){
     const columns = [
       {
-        Header : "Name",
+        Header : "Post info",
         columns: [
           {
-            Header  : "First Name",
-            accessor: "firstName"
+            Header  : "Sequence",
+            accessor: "seq"
           },
           {
-            Header: "Last Name",
-            id    : "lastName",
-          }
-        ]
-      },
-      {
-        Header : "Info",
-        columns: [
-          {
-            Header  : "Age",
-            accessor: "age"
+            Header  : "제목",
+            accessor: "title",
           },
           {
-            Header  : "Status",
-            accessor: "status"
-          }
-        ]
-      },
-      {
-        Header : "Stats",
-        columns: [
+            Header  : "게시판 ID",
+            accessor: "boardId",
+          },
           {
-            Header  : "Visits",
-            accessor: "visits"
+            Header  : "내용",
+            accessor: "content",
+          },
+          {
+            Header  : "저자",
+            accessor: "author",
+          },
+          {
+            Header  : "삭제 유무",
+            accessor: "isDelete",
+          },
+          {
+            Header  : "조회수",
+            accessor: "hits",
+          },
+          {
+            Header  : "수정일",
+            accessor: "modifyDate",
+          },
+          {
+            Header  : "등록일",
+            accessor: "regDate",
           }
         ]
       }
@@ -112,16 +149,22 @@ class PostManage extends React.Component {
 
     let boardListDropDown = this.printBoardList(this.props.boardList);
 
+    const data = (_.isNil(this.props.postList)) ? [] : this.props.postList;
+
+    console.log(data);
+
     return (
       <div>
         {boardListDropDown}
 
         <ReactTable
-          data={[]}
+          data={data}
           columns={columns}
           defaultPageSize={10}
           className="-striped -highlight"
           SubComponent={row =>{
+
+            console.log(row);
             return (
               <div style={{padding: "20px"}}>
                 <em>
@@ -130,7 +173,7 @@ class PostManage extends React.Component {
                 </em>
                 <br />
                 <br />
-                <MyEditor boardId={this.state.boardId} />
+                <MyEditor boardId={this.state.boardId} title={row.original.title} content={row.original.content} />
               </div>
             );
           }}

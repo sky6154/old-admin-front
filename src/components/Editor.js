@@ -1,17 +1,17 @@
-import React from 'react';
-import {connect}          from "react-redux";
-import {withRouter}       from "react-router";
-import PropTypes          from 'prop-types';
-import _                  from 'lodash';
+import React        from 'react';
+import {connect}    from "react-redux";
+import {withRouter} from "react-router";
+import PropTypes    from 'prop-types';
+import _            from 'lodash';
 
-import Editor, {composeDecorators} from 'draft-js-plugins-editor';
-import createEmojiPlugin                                      from 'draft-js-emoji-plugin';
-import createImagePlugin                                      from 'draft-js-image-plugin';
-import createAlignmentPlugin                                  from 'draft-js-alignment-plugin';
-import createFocusPlugin                                      from 'draft-js-focus-plugin';
-import createResizeablePlugin                                 from 'draft-js-resizeable-plugin';
-import createBlockDndPlugin                                   from 'draft-js-drag-n-drop-plugin';
-import createToolbarPlugin, {Separator}                       from 'draft-js-static-toolbar-plugin';
+import Editor, {composeDecorators}      from 'draft-js-plugins-editor';
+import createEmojiPlugin                from 'draft-js-emoji-plugin';
+import createImagePlugin                from 'draft-js-image-plugin';
+import createAlignmentPlugin            from 'draft-js-alignment-plugin';
+import createFocusPlugin                from 'draft-js-focus-plugin';
+import createResizeablePlugin           from 'draft-js-resizeable-plugin';
+import createBlockDndPlugin             from 'draft-js-drag-n-drop-plugin';
+import createToolbarPlugin, {Separator} from 'draft-js-static-toolbar-plugin';
 import {
   ItalicButton,
   BoldButton,
@@ -28,7 +28,7 @@ import {
   // AlignBlockCenterButton,
   // AlignBlockLeftButton,
   // AlignBlockRightButton
-}                                                             from 'draft-js-buttons';
+}                                       from 'draft-js-buttons';
 
 
 import 'draft-js-emoji-plugin/lib/plugin.css';
@@ -38,14 +38,16 @@ import 'draft-js-focus-plugin/lib/plugin.css';
 import 'draft-js-alignment-plugin/lib/plugin.css';
 
 import './css/Editor.css';
-import {ImageAddButton}                                       from "./EditorImageAddButton";
+import {ImageAddButton}                 from "./EditorImageAddButton";
 import {
   AtomicBlockUtils,
   convertFromRaw,
+  convertFromHTML,
   EditorState,
   convertToRaw,
-  ContentState
-}                                                             from 'draft-js';
+  ContentState,
+  CompositeDecorator
+}                                       from 'draft-js';
 
 import ReactFileReader from 'react-file-reader';
 import {stateToHTML}   from 'draft-js-export-html';
@@ -87,13 +89,64 @@ const plugins = [
   staticToolbarPlugin
 ];
 
+const findLinkEntities = (contentBlock, callback, contentState) =>{
+  contentBlock.findEntityRanges(
+    (character) =>{
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === 'LINK'
+      );
+    },
+    callback
+  );
+};
+
+const Link = (props) =>{
+  const {url} = props.contentState.getEntity(props.entityKey).getData();
+  return (
+    <a href={url}>
+            {props.children}
+          </a>
+  );
+};
+
+const findImageEntities = (contentBlock, callback, contentState) =>{
+  contentBlock.findEntityRanges(
+    (character) =>{
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === 'IMAGE'
+      );
+    },
+    callback
+  );
+};
+
+const Image = (props) =>{
+  const {
+          height,
+          src,
+          width,
+          alt
+        } = props.contentState.getEntity(props.entityKey).getData();
+
+  return (
+    <img src={src} height={height} width={width} alt={alt} />
+  );
+};
+
+
 class MyEditor extends React.Component {
   constructor(props){
     super(props);
 
     this.state = {
-      editorState: EditorState.createEmpty(),
-      title      : ''
+      editorState  : EditorState.createEmpty(),
+      title        : '',
+      isTitleLoad  : false,
+      isContentLoad: false
     };
   }
 
@@ -138,24 +191,56 @@ class MyEditor extends React.Component {
 
   };
 
-  // getSnapshotBeforeUpdate(prevProps, prevState) {
-  //   console.log(prevProps);
-  //
-  //   return null;
-  // }
+  static getDerivedStateFromProps(nextProps, prevState){
 
-  static getDerivedStateFromProps(nextProps, prevState) {
     if(nextProps.isPostProgress && nextProps.step1IsAllImageUploaded && nextProps.step2IsDoneReplaceSrc && nextProps.step3IsPostUpload){
       const editorState = EditorState.push(prevState.editorState, ContentState.createFromText(''));
 
       return {
-        editorState : editorState,
-        title : ''
+        editorState: editorState,
+        title      : ''
+      }
+    }
+
+    if(!_.isNil(nextProps.title) && prevState.title === '' && !prevState.isTitleLoad){
+      return {
+        title      : nextProps.title,
+        isTitleLoad: true
+      }
+    }
+
+    if(!_.isNil(nextProps.content) && !prevState.isContentLoad){
+      const sampleMarkup = nextProps.content;
+
+      const decorator = new CompositeDecorator([
+        {
+          strategy : findLinkEntities,
+          component: Link,
+        },
+        {
+          strategy : findImageEntities,
+          component: Image,
+        },
+      ]);
+
+      const blocksFromHTML = convertFromHTML(sampleMarkup);
+      const state = ContentState.createFromBlockArray(
+        blocksFromHTML.contentBlocks,
+        blocksFromHTML.entityMap
+      );
+
+      return {
+        isContentLoad: true,
+        editorState  : EditorState.createWithContent(
+          state,
+          decorator,
+        )
       }
     }
 
     return null;
   }
+
   componentDidUpdate(prevProps, prevState, snapshot){
 
     // 현재 공통된 saga 로직을 사용하고 있어서 글쓰기에 맞는 saga 로직으로 변경해야 함
@@ -222,8 +307,8 @@ class MyEditor extends React.Component {
       // 버튼 다시 못누르게 이미지 업로드가 아니라 포스팅 진행중일때로 한다.
       if(!this.props.isPostProgress){
         let req = {
-          boardId : this.props.boardId,
-          files : formData
+          boardId: this.props.boardId,
+          files  : formData
         };
 
         this.props.uploadImageTrigger(req);
@@ -401,37 +486,37 @@ class HeadlinesButton extends React.Component {
 
 
 MyEditor.defaultProps = {
-  isPostProgress            : false,
-  isImageUploading          : false,
-  isReplaceSrc              : false,
-  isPostUploading           : false,
-  step1IsAllImageUploaded   : false,
-  step2IsDoneReplaceSrc     : false,
-  step3IsPostUpload         : false,
-  imageUploadInfo           : []
+  isPostProgress         : false,
+  isImageUploading       : false,
+  isReplaceSrc           : false,
+  isPostUploading        : false,
+  step1IsAllImageUploaded: false,
+  step2IsDoneReplaceSrc  : false,
+  step3IsPostUpload      : false,
+  imageUploadInfo        : []
 };
 
 MyEditor.propTypes = {
-  isPostProgress            : PropTypes.bool.isRequired,
-  isImageUploading          : PropTypes.bool.isRequired,
-  isReplaceSrc              : PropTypes.bool.isRequired,
-  isPostUploading           : PropTypes.bool.isRequired,
-  step1IsAllImageUploaded   : PropTypes.bool.isRequired,
-  step2IsDoneReplaceSrc     : PropTypes.bool.isRequired,
-  step3IsPostUpload         : PropTypes.bool.isRequired,
-  imageUploadInfo           : PropTypes.array.isRequired
+  isPostProgress         : PropTypes.bool.isRequired,
+  isImageUploading       : PropTypes.bool.isRequired,
+  isReplaceSrc           : PropTypes.bool.isRequired,
+  isPostUploading        : PropTypes.bool.isRequired,
+  step1IsAllImageUploaded: PropTypes.bool.isRequired,
+  step2IsDoneReplaceSrc  : PropTypes.bool.isRequired,
+  step3IsPostUpload      : PropTypes.bool.isRequired,
+  imageUploadInfo        : PropTypes.array.isRequired
 };
 
 function mapStateToProps(state){
   return {
-    isPostProgress            : state.post.isPostProgress,
-    isImageUploading          : state.post.isImageUploading,
-    isReplaceSrc              : state.post.isReplaceSrc,
-    isPostUploading           : state.post.isPostUploading,
-    step1IsAllImageUploaded   : state.post.step1IsAllImageUploaded,
-    step2IsDoneReplaceSrc     : state.post.step2IsDoneReplaceSrc,
-    step3IsPostUpload         : state.post.step3IsPostUpload,
-    imageUploadInfo           : state.post.imageUploadInfo
+    isPostProgress         : state.post.isPostProgress,
+    isImageUploading       : state.post.isImageUploading,
+    isReplaceSrc           : state.post.isReplaceSrc,
+    isPostUploading        : state.post.isPostUploading,
+    step1IsAllImageUploaded: state.post.step1IsAllImageUploaded,
+    step2IsDoneReplaceSrc  : state.post.step2IsDoneReplaceSrc,
+    step3IsPostUpload      : state.post.step3IsPostUpload,
+    imageUploadInfo        : state.post.imageUploadInfo
   };
 }
 

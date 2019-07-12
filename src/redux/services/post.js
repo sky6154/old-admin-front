@@ -15,6 +15,10 @@ export const uploadImageApi = req =>{
 
   const fullUrl = `${apiServer}/post/uploadFile/${req.boardId}`;
 
+  if(req.files.values().next().done){
+    return
+  }
+
   return axios.post(fullUrl, req.files, createCommonRequest())
     .then((res) =>{
       return res.data;
