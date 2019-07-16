@@ -151,8 +151,6 @@ class PostManage extends React.Component {
 
     const data = (_.isNil(this.props.postList)) ? [] : this.props.postList;
 
-    console.log(data);
-
     return (
       <div>
         {boardListDropDown}
@@ -163,8 +161,6 @@ class PostManage extends React.Component {
           defaultPageSize={10}
           className="-striped -highlight"
           SubComponent={row =>{
-
-            console.log(row);
             return (
               <div style={{padding: "20px"}}>
                 <em>
@@ -173,7 +169,7 @@ class PostManage extends React.Component {
                 </em>
                 <br />
                 <br />
-                <MyEditor boardId={this.state.boardId} title={row.original.title} content={row.original.content} />
+                <MyEditor boardId={this.state.boardId} title={row.original.title} content={row.original.content} isUpdate={true} seq={row.original.seq} />
               </div>
             );
           }}

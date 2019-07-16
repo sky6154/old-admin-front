@@ -34,10 +34,16 @@ const actionHandlers = {
       timeout : 3000
     });
 
-    // removeSessionInfo();
-
-    // ...initialkState 가 아니라 그냥 전체 Post쪽 정보를 초기화 한다.
-    return Object.assign({}, state, initialState);
+    return Object.assign({}, state, {
+      isPostProgress         : false,
+      isImageUploading       : false,
+      isReplaceSrc           : false,
+      isPostUploading        : false,
+      step1IsAllImageUploaded: false,
+      step2IsDoneReplaceSrc  : false,
+      step3IsPostUpload      : false,
+      imageUploadInfo        : []
+    });
   },
 
 
@@ -53,7 +59,16 @@ const actionHandlers = {
     });
   },
   [actionTypes.REPLACE_IMAGE_SRC.FAILURE]: (state, action) =>{
-    return Object.assign({}, state, initialState);
+    return Object.assign({}, state, {
+      isPostProgress         : false,
+      isImageUploading       : false,
+      isReplaceSrc           : false,
+      isPostUploading        : false,
+      step1IsAllImageUploaded: false,
+      step2IsDoneReplaceSrc  : false,
+      step3IsPostUpload      : false,
+      imageUploadInfo        : []
+    });
   },
 
 
@@ -70,13 +85,30 @@ const actionHandlers = {
   },
   [actionTypes.UPLOAD_POST.FAILURE]: (state, action) =>{
     // removeSessionInfo();
-
-    return Object.assign({}, state, initialState);
+    return Object.assign({}, state, {
+      isPostProgress         : false,
+      isImageUploading       : false,
+      isReplaceSrc           : false,
+      isPostUploading        : false,
+      step1IsAllImageUploaded: false,
+      step2IsDoneReplaceSrc  : false,
+      step3IsPostUpload      : false,
+      imageUploadInfo        : []
+    });
   },
 
 
   [actionTypes.REMOVE_STATE.SUCCESS]: (state, action) =>{
-    return Object.assign({}, state, initialState);
+    return Object.assign({}, state, {
+      isPostProgress         : false,
+      isImageUploading       : false,
+      isReplaceSrc           : false,
+      isPostUploading        : false,
+      step1IsAllImageUploaded: false,
+      step2IsDoneReplaceSrc  : false,
+      step3IsPostUpload      : false,
+      imageUploadInfo        : []
+    });
   },
 
 
@@ -96,10 +128,10 @@ const actionHandlers = {
       timeout : 3000
     });
 
-    // removeSessionInfo();
-
-    // ...initialkState 가 아니라 그냥 전체 Post쪽 정보를 초기화 한다.
-    return Object.assign({}, state, {isPostListFetching: false});
+    return Object.assign({}, state, {
+      isPostListFetching: false,
+      postList          : []
+    });
   },
 };
 

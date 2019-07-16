@@ -56,13 +56,20 @@ export const replaceImageSrcFunc = req => {
 
 export const uploadPostApi = req =>{
   const apiServer = getApiServer();
+  let fullUrl;
 
   if(_.isNil(req)){
     throw new Error("req is not exist");
   }
 
-  console.log("UPLOAD POST API CALL");
-  const fullUrl = `${apiServer}/post/${req.boardId}`;
+  if(_.isNil(req.seq)){
+    console.log("UPLOAD POST API CALL");
+    fullUrl = `${apiServer}/post/write/${req.boardId}`;
+  }
+  else{
+    console.log("UPDATE POST API CALL");
+    fullUrl = `${apiServer}/post/update/${req.boardId}/${req.seq}`;
+  }
 
   let jsonData = JSON.stringify(req);
 

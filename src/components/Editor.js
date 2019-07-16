@@ -56,7 +56,6 @@ import base64ToBlob    from '../utils/base64ToBlob';
 import {uploadImageTrigger, replaceImageSrcTrigger, uploadPostTrigger, removeStateTrigger} from "../redux/actions/post";
 import Alert                                                                               from "react-s-alert";
 import TextField                                                                           from "@material-ui/core/es/TextField/TextField";
-import MenuItem                                                                            from "@material-ui/core/es/MenuItem/MenuItem";
 
 
 const emojiPlugin = createEmojiPlugin();
@@ -150,47 +149,6 @@ class MyEditor extends React.Component {
     };
   }
 
-  handleFiles = files =>{
-    const base64 = files.base64;
-    const newEditorState = this.insertImageToEditor(this.state.editorState, base64);
-
-    this.setState({editorState: newEditorState});
-  };
-
-  insertImageToEditor = (editorState, base64) =>{
-    const contentState = editorState.getCurrentContent();
-    const contentStateWithEntity = contentState.createEntity(
-      'image',
-      'IMMUTABLE',
-      {src: base64},
-    );
-    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    const newEditorState = EditorState.set(
-      editorState,
-      {currentContent: contentStateWithEntity},
-    );
-    return AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' ');
-  };
-
-  handleSubmit = () =>{
-    const content = this.state.editorState.getCurrentContent();
-    const dataToSaveBackend = convertToRaw(content);
-
-    if(this.state.title === ''){
-      Alert.error("제목을 입력하여 주세요.", {
-        position: 'top-right',
-        effect  : 'slide',
-        timeout : 3000
-      });
-    }
-    else{
-      if(!_.isNil(dataToSaveBackend)){
-        this.uploadImages(dataToSaveBackend.entityMap);
-      }
-    }
-
-  };
-
   static getDerivedStateFromProps(nextProps, prevState){
 
     if(nextProps.isPostProgress && nextProps.step1IsAllImageUploaded && nextProps.step2IsDoneReplaceSrc && nextProps.step3IsPostUpload){
@@ -271,6 +229,46 @@ class MyEditor extends React.Component {
     // 이후 handling ..?
   }
 
+  handleFiles = files =>{
+    const base64 = files.base64;
+    const newEditorState = this.insertImageToEditor(this.state.editorState, base64);
+
+    this.setState({editorState: newEditorState});
+  };
+
+  insertImageToEditor = (editorState, base64) =>{
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      'image',
+      'IMMUTABLE',
+      {src: base64},
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(
+      editorState,
+      {currentContent: contentStateWithEntity},
+    );
+    return AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' ');
+  };
+
+  handleSubmit = () =>{
+    const content = this.state.editorState.getCurrentContent();
+    const dataToSaveBackend = convertToRaw(content);
+
+    if(this.state.title === ''){
+      Alert.error("제목을 입력하여 주세요.", {
+        position: 'top-right',
+        effect  : 'slide',
+        timeout : 3000
+      });
+    }
+    else{
+      if(!_.isNil(dataToSaveBackend)){
+        this.uploadImages(dataToSaveBackend.entityMap);
+      }
+    }
+  };
+
   handleTitle = (event) =>{
     this.setState({title: event.target.value});
   };
@@ -348,12 +346,24 @@ class MyEditor extends React.Component {
 
   uploadPost = () =>{
     let content = stateToHTML(this.state.editorState.getCurrentContent());
+    let req;
 
-    let req = {
-      boardId: this.props.boardId,
-      title  : this.state.title,
-      content: content
-    };
+
+    if(this.props.isUpdate){
+      req = {
+        seq    : this.props.seq,
+        boardId: this.props.boardId,
+        title  : this.state.title,
+        content: content
+      };
+    }
+    else{
+      req = {
+        boardId: this.props.boardId,
+        title  : this.state.title,
+        content: content
+      };
+    }
 
     this.props.uploadPostTrigger(req);
   };
