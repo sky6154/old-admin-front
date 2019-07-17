@@ -1,6 +1,8 @@
 import * as actionTypes from '../actions/post';
 import createReducer    from '../utils/createReducer';
 import Alert            from 'react-s-alert';
+import _                from "lodash";
+import update           from "immutability-helper";
 
 const initialState = {
   isPostProgress         : false,
@@ -76,7 +78,24 @@ const actionHandlers = {
     return Object.assign({}, state, {isPostUploading: true});
   },
   [actionTypes.UPLOAD_POST.SUCCESS]: (state, action) =>{
-    const imageUploadResult = action.data;
+    const result = action.data;
+    let {postList} = state;
+
+    if(!_.isNil(action.req.seq)){ // post update
+      if(!_.isNil(postList) && !_.isEmpty(postList)){
+        const index = _.findIndex(postList, {['seq']: result.seq});
+
+        if(index >= 0){
+          const newList = update(postList, {[index]: {$set: result}});
+
+          return Object.assign({}, state, {
+            isPostUploading  : false,
+            step3IsPostUpload: true,
+            postList         : newList
+          });
+        }
+      }
+    }
 
     return Object.assign({}, state, {
       isPostUploading  : false,

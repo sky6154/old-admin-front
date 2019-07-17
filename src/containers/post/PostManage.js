@@ -163,12 +163,6 @@ class PostManage extends React.Component {
           SubComponent={row =>{
             return (
               <div style={{padding: "20px"}}>
-                <em>
-                  You can put any component you want here, even another React
-                  Table!
-                </em>
-                <br />
-                <br />
                 <MyEditor boardId={this.state.boardId} title={row.original.title} content={row.original.content} isUpdate={true} seq={row.original.seq} />
               </div>
             );

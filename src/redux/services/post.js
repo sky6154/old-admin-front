@@ -57,6 +57,7 @@ export const replaceImageSrcFunc = req => {
 export const uploadPostApi = req =>{
   const apiServer = getApiServer();
   let fullUrl;
+  let jsonData = JSON.stringify(req);
 
   if(_.isNil(req)){
     throw new Error("req is not exist");
@@ -65,21 +66,28 @@ export const uploadPostApi = req =>{
   if(_.isNil(req.seq)){
     console.log("UPLOAD POST API CALL");
     fullUrl = `${apiServer}/post/write/${req.boardId}`;
+
+    return axios.post(fullUrl, jsonData, createCommonRequest())
+      .then((res) =>{
+        return res.data;
+      })
+      .catch((err) =>{
+        throw err;
+      });
   }
   else{
     console.log("UPDATE POST API CALL");
     fullUrl = `${apiServer}/post/update/${req.boardId}/${req.seq}`;
+
+    return axios.put(fullUrl, jsonData, createCommonRequest())
+      .then((res) =>{
+        console.log(res);
+        return res.data;
+      })
+      .catch((err) =>{
+        throw err;
+      });
   }
-
-  let jsonData = JSON.stringify(req);
-
-  return axios.post(fullUrl, jsonData, createCommonRequest())
-    .then((res) =>{
-      return res.data;
-    })
-    .catch((err) =>{
-      throw err;
-    });
 };
 
 

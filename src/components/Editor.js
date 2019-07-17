@@ -30,6 +30,8 @@ import {
   // AlignBlockRightButton
 }                                       from 'draft-js-buttons';
 
+import {stateFromHTML} from 'draft-js-import-html';
+
 
 import 'draft-js-emoji-plugin/lib/plugin.css';
 import 'draft-js-static-toolbar-plugin/lib/plugin.css';
@@ -88,54 +90,6 @@ const plugins = [
   staticToolbarPlugin
 ];
 
-const findLinkEntities = (contentBlock, callback, contentState) =>{
-  contentBlock.findEntityRanges(
-    (character) =>{
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === 'LINK'
-      );
-    },
-    callback
-  );
-};
-
-const Link = (props) =>{
-  const {url} = props.contentState.getEntity(props.entityKey).getData();
-  return (
-    <a href={url}>
-            {props.children}
-          </a>
-  );
-};
-
-const findImageEntities = (contentBlock, callback, contentState) =>{
-  contentBlock.findEntityRanges(
-    (character) =>{
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === 'IMAGE'
-      );
-    },
-    callback
-  );
-};
-
-const Image = (props) =>{
-  const {
-          height,
-          src,
-          width,
-          alt
-        } = props.contentState.getEntity(props.entityKey).getData();
-
-  return (
-    <img src={src} height={height} width={width} alt={alt} />
-  );
-};
-
 
 class MyEditor extends React.Component {
   constructor(props){
@@ -150,7 +104,6 @@ class MyEditor extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState){
-
     if(nextProps.isPostProgress && nextProps.step1IsAllImageUploaded && nextProps.step2IsDoneReplaceSrc && nextProps.step3IsPostUpload){
       const editorState = EditorState.push(prevState.editorState, ContentState.createFromText(''));
 
@@ -168,31 +121,12 @@ class MyEditor extends React.Component {
     }
 
     if(!_.isNil(nextProps.content) && !prevState.isContentLoad){
-      const sampleMarkup = nextProps.content;
-
-      const decorator = new CompositeDecorator([
-        {
-          strategy : findLinkEntities,
-          component: Link,
-        },
-        {
-          strategy : findImageEntities,
-          component: Image,
-        },
-      ]);
-
-      const blocksFromHTML = convertFromHTML(sampleMarkup);
-      const state = ContentState.createFromBlockArray(
-        blocksFromHTML.contentBlocks,
-        blocksFromHTML.entityMap
-      );
+      const html = nextProps.content;
+      const contentState = stateFromHTML(html);
 
       return {
         isContentLoad: true,
-        editorState  : EditorState.createWithContent(
-          state,
-          decorator,
-        )
+        editorState  : EditorState.createWithContent(contentState)
       }
     }
 
@@ -201,6 +135,7 @@ class MyEditor extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot){
 
+    // TODO
     // 현재 공통된 saga 로직을 사용하고 있어서 글쓰기에 맞는 saga 로직으로 변경해야 함
     if(this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc && this.props.step3IsPostUpload){
       console.log("STEP 3");
@@ -415,7 +350,10 @@ class MyEditor extends React.Component {
               )
             }
           </Toolbar>
-        <div className={"editor"} onClick={this.focus}>
+        <div className={"editor"} onClick={this.focus} style={{
+          overflow: "scroll",
+          maxHeight: "300px"
+        }}>
           <Editor
             editorState={this.state.editorState}
             onChange={this.onChange}
