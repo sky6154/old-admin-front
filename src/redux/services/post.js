@@ -77,11 +77,10 @@ export const uploadPostApi = req =>{
   }
   else{
     console.log("UPDATE POST API CALL");
-    fullUrl = `${apiServer}/post/update/${req.boardId}/${req.seq}`;
+    fullUrl = `${apiServer}/post/update/${req.boardId}/post/${req.seq}`;
 
     return axios.put(fullUrl, jsonData, createCommonRequest())
       .then((res) =>{
-        console.log(res);
         return res.data;
       })
       .catch((err) =>{

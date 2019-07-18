@@ -30,7 +30,11 @@ import {
   // AlignBlockRightButton
 }                                       from 'draft-js-buttons';
 
+
+import ReactFileReader from 'react-file-reader';
+import base64ToBlob    from '../utils/base64ToBlob';
 import {stateFromHTML} from 'draft-js-import-html';
+import {stateToHTML}   from 'draft-js-export-html';
 
 
 import 'draft-js-emoji-plugin/lib/plugin.css';
@@ -50,10 +54,6 @@ import {
   ContentState,
   CompositeDecorator
 }                                       from 'draft-js';
-
-import ReactFileReader from 'react-file-reader';
-import {stateToHTML}   from 'draft-js-export-html';
-import base64ToBlob    from '../utils/base64ToBlob';
 
 import {uploadImageTrigger, replaceImageSrcTrigger, uploadPostTrigger, removeStateTrigger} from "../redux/actions/post";
 import Alert                                                                               from "react-s-alert";
@@ -104,15 +104,6 @@ class MyEditor extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState){
-    if(nextProps.isPostProgress && nextProps.step1IsAllImageUploaded && nextProps.step2IsDoneReplaceSrc && nextProps.step3IsPostUpload){
-      const editorState = EditorState.push(prevState.editorState, ContentState.createFromText(''));
-
-      return {
-        editorState: editorState,
-        title      : ''
-      }
-    }
-
     if(!_.isNil(nextProps.title) && prevState.title === '' && !prevState.isTitleLoad){
       return {
         title      : nextProps.title,
@@ -127,6 +118,15 @@ class MyEditor extends React.Component {
       return {
         isContentLoad: true,
         editorState  : EditorState.createWithContent(contentState)
+      }
+    }
+
+    if(nextProps.isPostProgress && nextProps.step1IsAllImageUploaded && nextProps.step2IsDoneReplaceSrc && nextProps.step3IsPostUpload){
+      const editorState = EditorState.push(prevState.editorState, ContentState.createFromText(''));
+
+      return {
+        editorState: editorState,
+        title      : ''
       }
     }
 

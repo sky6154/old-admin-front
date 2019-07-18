@@ -31,16 +31,6 @@ class PostManage extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState){
-    // 여기서는 setState 를 하는 것이 아니라
-    // 특정 props 가 바뀔 때 설정하고 설정하고 싶은 state 값을 리턴하는 형태로
-    // 사용됩니다.
-    /*
-    if (nextProps.value !== prevState.value) {
-      return { value: nextProps.value };
-    }
-    return null; // null 을 리턴하면 따로 업데이트 할 것은 없다라는 의미
-    */
-
     if(prevState.boardId === -1 && !_.isNil(nextProps.boardList) && !_.isEmpty(nextProps.boardList)){
       return {
         boardId: nextProps.boardList[0].boardId
@@ -76,7 +66,6 @@ class PostManage extends React.Component {
 
   printBoardList = (boardList) =>{
     if(!_.isNil(boardList) && boardList.length > 0){
-
       return <TextField
         id="outlined-select-currency"
         select
@@ -129,7 +118,8 @@ class PostManage extends React.Component {
           },
           {
             Header  : "삭제 유무",
-            accessor: "isDelete",
+            id      : "isDelete",
+            accessor: data => data.isDelete.toString()
           },
           {
             Header  : "조회수",
@@ -163,7 +153,8 @@ class PostManage extends React.Component {
           SubComponent={row =>{
             return (
               <div style={{padding: "20px"}}>
-                <MyEditor boardId={this.state.boardId} title={row.original.title} content={row.original.content} isUpdate={true} seq={row.original.seq} />
+                <MyEditor boardId={this.state.boardId} title={row.original.title} content={row.original.content}
+                          isUpdate={true} seq={row.original.seq} />
               </div>
             );
           }}
