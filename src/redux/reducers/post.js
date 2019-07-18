@@ -14,7 +14,9 @@ const initialState = {
   step3IsPostUpload      : false,
   imageUploadInfo        : [],
   isPostListFetching     : false,
-  postList               : []
+  postList               : [],
+  isPostRemoving         : false,
+  isPostRestoring         : false,
 };
 
 const actionHandlers = {
@@ -150,6 +152,73 @@ const actionHandlers = {
     return Object.assign({}, state, {
       isPostListFetching: false,
       postList          : []
+    });
+  },
+
+
+  [actionTypes.DELETE_POST.REQUEST]: (state, action) =>{
+    return Object.assign({}, state, {isPostRemoving: true});
+  },
+  [actionTypes.DELETE_POST.SUCCESS]: (state, action) =>{
+    const result = action.data;
+    let {postList} = state;
+
+    if(!_.isNil(action.req.seq)){ // post update
+      if(!_.isNil(postList) && !_.isEmpty(postList)){
+        const index = _.findIndex(postList, {['seq']: result.seq});
+
+        if(index >= 0){
+          const newList = update(postList, {[index]: {$set: result}});
+
+          return Object.assign({}, state, {
+            isPostRemoving: false,
+            postList      : newList
+          });
+        }
+      }
+    }
+
+    return Object.assign({}, state, {
+      isPostRemoving: false,
+    });
+  },
+  [actionTypes.DELETE_POST.FAILURE]: (state, action) =>{
+    // removeSessionInfo();
+    return Object.assign({}, state, {
+      isPostRemoving: false
+    });
+  },
+
+  [actionTypes.RESTORE_POST.REQUEST]: (state, action) =>{
+    return Object.assign({}, state, {isPostRemoving: true});
+  },
+  [actionTypes.RESTORE_POST.SUCCESS]: (state, action) =>{
+    const result = action.data;
+    let {postList} = state;
+
+    if(!_.isNil(action.req.seq)){ // post update
+      if(!_.isNil(postList) && !_.isEmpty(postList)){
+        const index = _.findIndex(postList, {['seq']: result.seq});
+
+        if(index >= 0){
+          const newList = update(postList, {[index]: {$set: result}});
+
+          return Object.assign({}, state, {
+            isPostRestoring: false,
+            postList      : newList
+          });
+        }
+      }
+    }
+
+    return Object.assign({}, state, {
+      isPostRestoring: false,
+    });
+  },
+  [actionTypes.RESTORE_POST.FAILURE]: (state, action) =>{
+    // removeSessionInfo();
+    return Object.assign({}, state, {
+      isPostRestoring: false
     });
   },
 };

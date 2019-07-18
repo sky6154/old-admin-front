@@ -105,3 +105,45 @@ export const fetchPostListApi = req =>{
       throw err;
     });
 };
+
+
+export const deletePostApi = req =>{
+  const apiServer = getApiServer();
+  let fullUrl;
+
+  if(_.isNil(req)){
+    throw new Error("req is not exist");
+  }
+
+  console.log("DELETE POST API CALL");
+  fullUrl = `${apiServer}/post/delete/${req.seq}`;
+
+  return axios.delete(fullUrl, createCommonRequest())
+    .then((res) =>{
+      return res.data;
+    })
+    .catch((err) =>{
+      throw err;
+    });
+};
+
+export const restorePostApi = req =>{
+  const apiServer = getApiServer();
+  let fullUrl;
+  let jsonData = JSON.stringify(req);
+
+  if(_.isNil(req)){
+    throw new Error("req is not exist");
+  }
+
+  console.log("RESTORE POST API CALL");
+  fullUrl = `${apiServer}/post/restore/${req.seq}`;
+
+  return axios.patch(fullUrl, jsonData, createCommonRequest())
+    .then((res) =>{
+      return res.data;
+    })
+    .catch((err) =>{
+      throw err;
+    });
+};

@@ -1,5 +1,5 @@
 /* eslint-disable no-constant-condition */
-import {uploadImageApi, replaceImageSrcFunc, uploadPostApi, fetchPostListApi} from '../services/post';
+import {uploadImageApi, replaceImageSrcFunc, uploadPostApi, fetchPostListApi, deletePostApi, restorePostApi} from '../services/post';
 import * as actions                                                           from '../actions/post';
 import {createIterator, createWatcher}                                        from '../utils/createSaga';
 
@@ -11,6 +11,9 @@ const removeState = createIterator(actions.removeState, () => {});
 
 const fetchPostList = createIterator(actions.fetchPostList, fetchPostListApi);
 
+const deletePost = createIterator(actions.deletePost, deletePostApi);
+const restorePost = createIterator(actions.restorePost, restorePostApi);
+
 
 /******************************* WATCHERS *************************************/
 
@@ -19,13 +22,17 @@ const watchReplaceImageSrc = createWatcher(actions.REPLACE_IMAGE_SRC_TRIGGER, re
 const watchUploadPost = createWatcher(actions.UPLOAD_POST_TRIGGER, uploadPost);
 const watchRemoveState = createWatcher(actions.REMOVE_STATE_TRIGGER, removeState);
 
-
 const watchFetchPostList = createWatcher(actions.FETCH_POST_LIST_TRIGGER, fetchPostList);
+
+const watchDeletePost = createWatcher(actions.DELETE_POST_TRIGGER, deletePost);
+const watchRestorePost = createWatcher(actions.RESTORE_POST_TRIGGER, restorePost);
 
 export default [
   watchImageUpload,
   watchReplaceImageSrc,
   watchUploadPost,
   watchRemoveState,
-  watchFetchPostList
+  watchFetchPostList,
+  watchDeletePost,
+  watchRestorePost
 ];

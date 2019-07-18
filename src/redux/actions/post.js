@@ -29,3 +29,15 @@ export const FETCH_POST_LIST = createActionTypes('FETCH_POST_LIST');
 export const fetchPostList = createSagaAction(FETCH_POST_LIST);
 export const FETCH_POST_LIST_TRIGGER = 'FETCH_POST_LIST_TRIGGER';
 export const fetchPostListTrigger = (req, requiredFields = []) => createActionCreator(FETCH_POST_LIST_TRIGGER, {req, requiredFields});
+
+
+export const DELETE_POST = createActionTypes('DELETE_POST');
+export const deletePost = createSagaAction(DELETE_POST);
+export const DELETE_POST_TRIGGER = 'DELETE_POST_TRIGGER';
+export const deletePostTrigger = (req, requiredFields = []) => createActionCreator(DELETE_POST_TRIGGER, {req, requiredFields});
+
+
+export const RESTORE_POST = createActionTypes('RESTORE_POST');
+export const restorePost = createSagaAction(RESTORE_POST);
+export const RESTORE_POST_TRIGGER = 'RESTORE_POST_TRIGGER';
+export const restorePostTrigger = (req, requiredFields = []) => createActionCreator(RESTORE_POST_TRIGGER, {req, requiredFields});
