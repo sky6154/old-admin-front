@@ -44,44 +44,58 @@ class AdminManage extends React.Component {
         "1": "Value 1",
         "2": "Value 2",
         "3": "Value 3"
-      },
-      "someToggle": {
-        disactive: "FALSE",
-        active   : "TRUE"
       }
     };
 
     const columns = [
       {
-        Header : "운영자",
+        Header : "운영자 목록",
         columns: [
+          {
+            Header  : "seq",
+            accessor: "seq"
+          },
           {
             Header  : "운영자 ID",
             accessor: "id"
-          }
-        ]
-      },
-      {
-        Header : "정보",
-        columns: [
+          },
           {
             Header  : "이름",
             accessor: "name"
           },
           {
-            Header  : "권한",
-            id      : "role",
-            // accessor: data => (!_.isNil(replaceValue["role"][data.role])) ? replaceValue["role"][data.role] : data.role
+            Header  : "이메일",
+            accessor: "email"
           },
           {
-            Header  : "마지막 로그인",
-            id      : "last_login",
-            accessor: data => (!_.isNil(data.last_login) && data.last_login !== '') ? moment(data.last_login).format("YYYY-MM-DD HH:mm:SS") : ''
+            Header  : "설명",
+            id      : "description",
+            accessor: data => data.description
+          },
+          {
+            Header  : "권한",
+            id      : "role",
+            accessor: data => data.role.role
+          },
+          {
+            Header  : "권한 설명",
+            id      : "roleDescription",
+            accessor: data => data.role.description
+          },
+          {
+            Header  : "활성 유무",
+            id      : "active",
+            accessor: data => data.active.toString()
+          },
+          {
+            Header  : "수정일",
+            id      : "modifyDate",
+            accessor: data => (!_.isNil(data.modifyDate) && data.modifyDate !== '') ? moment(data.modifyDate).format("YYYY-MM-DD HH:mm:SS") : ''
           },
           {
             Header  : "등록일",
-            id      : "reg_date",
-            accessor: data => (!_.isNil(data.reg_date) && data.reg_date !== '') ? moment(data.reg_date).format("YYYY-MM-DD HH:mm:SS") : ''
+            id      : "regDate",
+            accessor: data => (!_.isNil(data.regDate) && data.regDate !== '') ? moment(data.regDate).format("YYYY-MM-DD HH:mm:SS") : ''
           }
         ]
       }
