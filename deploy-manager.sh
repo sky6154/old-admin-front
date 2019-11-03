@@ -10,4 +10,4 @@
 }
 
 docker load < admin-front.tar
-docker service create --name admin-front --replicas 3 --publish 8888:8080 admin-front:latest
+docker service create --name admin-front --replicas 3 --publish 8888:80 admin-front:latest
