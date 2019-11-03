@@ -1,5 +1,4 @@
 import axios from "axios";
-import _ from "lodash";
 
 import {getApiServer} from "../../config/index";
 import createCommonRequest from "../utils/createCommonRequest";

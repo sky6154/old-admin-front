@@ -119,7 +119,7 @@ class Menu extends React.Component {
             <ListItem button className={classes.nested}>
               <ListItemIcon><FingerprintIcon /></ListItemIcon>
               <ListItemText primary={"비밀번호 변경"} onClick={() =>{
-                this.goTo("/user")
+                this.goTo("/my/changePassword")
               }} />
             </ListItem>
           </List>
