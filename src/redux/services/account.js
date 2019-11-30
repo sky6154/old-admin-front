@@ -38,7 +38,7 @@ export const authCheckApi = () =>{
   const apiServer = getApiServer();
 
   console.log("AUTH CHECK API CALL");
-  const fullUrl = `${apiServer}/authCheck`;
+  const fullUrl = `${apiServer}/getAuthorities`;
 
   return axios.get(fullUrl, createCommonRequest())
     .then((res) =>{

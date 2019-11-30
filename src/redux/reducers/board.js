@@ -1,7 +1,7 @@
 import * as actionTypes    from '../actions/board';
 import createReducer       from '../utils/createReducer';
 import Alert               from 'react-s-alert';
-import {removeSessionInfo} from "../../config/session";
+import {removeUserInfo} from "../../config/userInfo";
 
 const initialState = {
   isBoardListFetching: false,
@@ -27,7 +27,7 @@ const actionHandlers = {
       timeout : 3000
     });
 
-    removeSessionInfo();
+    removeUserInfo();
 
     return Object.assign({}, state, {
       isBoardListFetching: false,

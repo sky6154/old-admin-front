@@ -1,7 +1,6 @@
 import React from 'react';
 
 import _              from "lodash";
-import {getToken}     from "./session";
 import {authCheckApi} from "../redux/services/account";
 
 export const Role = Object.freeze({
@@ -11,10 +10,7 @@ export const Role = Object.freeze({
 });
 
 export const permissionCheck = (requiredPermissions, history) =>{
-  if(_.isNil(getToken())){
-    history.replace("/login");
-  }
-  else if(!Array.isArray(requiredPermissions)){
+  if(!Array.isArray(requiredPermissions)){
     throw "Arguments must be a array";
   }
   else{

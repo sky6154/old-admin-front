@@ -4,7 +4,7 @@ import createSagaMiddleware, { END } from 'redux-saga';
 //import createHistory from 'history/createHashHistory';
 import { routerReducer/*, routerMiddleware*/ } from 'react-router-redux';
 import * as rootReducer from '../reducers';
-import {removeSessionInfo} from '../../config/session';
+import {removeUserInfo} from '../../config/userInfo';
 
 //const history = createHistory();
 //const routingMiddleware = routerMiddleware(history);

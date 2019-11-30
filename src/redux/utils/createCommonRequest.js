@@ -8,11 +8,11 @@ export default function createCommonRequest(headers, options) {
     _headers = createHeader();
   }
 
-  // if(_.isNil(options)){
-  //   _options = {
-  //     withCredentials: true
-  //   };
-  // }
+  if(_.isNil(options)){
+    _options = {
+      withCredentials: true
+    };
+  }
 
   let request = {
     headers : _headers,

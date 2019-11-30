@@ -1,7 +1,7 @@
 import * as actionTypes                       from '../actions/account';
 import createReducer                          from '../utils/createReducer';
 import Alert                                  from 'react-s-alert';
-import {insertSessionInfo, removeSessionInfo} from "../../config/session";
+import {setUserInfo, removeUserInfo} from "../../config/userInfo";
 
 const initialState = {
   isLoginRequesting    : false,
@@ -20,9 +20,9 @@ const actionHandlers = {
     });
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) =>{
-    // const isLogin = action.data;
+    const data = action.data;
 
-    insertSessionInfo(action.data.token, action.data.authorities);
+    setUserInfo(data.authorities);
 
     return Object.assign({}, state, {
       isLoginRequesting: false,
@@ -36,7 +36,7 @@ const actionHandlers = {
       timeout : 3000
     });
 
-    removeSessionInfo();
+    removeUserInfo();
 
     return Object.assign({}, state, {
       isLoginRequesting: false,
@@ -51,7 +51,7 @@ const actionHandlers = {
   [actionTypes.LOGOUT.SUCCESS]: (state, action) =>{
     const isLogin = action.data;
 
-    removeSessionInfo();
+    removeUserInfo();
 
     return Object.assign({}, state, {
       isLogoutRequesting: false,
@@ -65,7 +65,7 @@ const actionHandlers = {
       timeout : 3000
     });
 
-    removeSessionInfo();
+    removeUserInfo();
 
     return Object.assign({}, state, {
       isLogoutRequesting: false
@@ -91,7 +91,7 @@ const actionHandlers = {
       timeout : 3000
     });
 
-    removeSessionInfo();
+    removeUserInfo();
 
     return Object.assign({}, state, {
       isFetchBoardListRequesting: false,
