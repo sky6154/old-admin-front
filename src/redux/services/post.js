@@ -15,11 +15,14 @@ export const uploadImageApi = req =>{
 
   const fullUrl = `${apiServer}/post/uploadFile/${req.boardId}`;
 
+  let headers = {};
+  headers['Content-Type'] = 'multipart/form-data;';
+
   if(req.files.values().next().done){
     return ;
   }
 
-  return axios.post(fullUrl, req.files, createCommonRequest())
+  return axios.post(fullUrl, req.files, createCommonRequest(headers))
     .then((res) =>{
       return res.data;
     })

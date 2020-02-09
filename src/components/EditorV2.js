@@ -8,6 +8,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
+import Grid from "@material-ui/core/Grid";
 
 
 class BrandEditor extends Component {
@@ -103,16 +104,14 @@ class BrandEditor extends Component {
           onChange={this.handleEditorChange}
         />
         <br />
-        <div style={{
-          display  : 'block',
-          textAlign: 'right'
-        }}>
+
+        <Grid container alignItems="flex-start" justify="flex-end" direction="row">
           <Button variant="contained" color="primary" onClick={this.handleSave}
                   disabled={_.isNil(isValidate) || !isValidate}>SAVE</Button>
 
-          {!isCreate && <Button variant="contained" color={"#e03333"} onClick={() => {
+          {!isCreate && <Button variant="contained" style={{background:"#e03333", color:"white"}} onClick={() => {
             this.setState({deleteOpen: true});
-          }}/>}
+          }}>DELETE</Button>}
 
           <Dialog
             disableBackdropClick
@@ -134,7 +133,7 @@ class BrandEditor extends Component {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </Grid>
 
       </div>
     );

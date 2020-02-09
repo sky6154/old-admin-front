@@ -14,10 +14,9 @@ export default function createCommonRequest(headers, options) {
     };
   }
 
-  let request = {
+  return {
     headers : _headers,
     ..._options
   };
 
-  return request;
 }
