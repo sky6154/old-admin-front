@@ -2,15 +2,32 @@ import Cookies from 'universal-cookie';
 import _       from "lodash";
 import {Role}  from "./Role";
 
-let ROLE_NAME = "develobeer-role";
+const ROLE_NAME = "develobeer-role";
+export const CSRF_HEADER = "develobeer-csrf-header-name";
+export const CSRF_TOKEN = "develobeer-csrf-token";
 
 const cookies = new Cookies();
 
 export function removeUserInfo() {
   cookies.remove(ROLE_NAME);
+  cookies.remove(CSRF_HEADER);
+  cookies.remove(CSRF_TOKEN);
 }
 
-export function setUserInfo(role){
+export function setCsrfToken(headerName, csrfToken){
+  if(_.isNil(headerName) || headerName === ""){
+    throw "Csrf header name doesn't exist.";
+  }
+  else if(_.isNil(csrfToken) || csrfToken === ""){
+    throw "Csrf token doesn't exist.";
+  }
+
+  removeUserInfo();
+  cookies.set(CSRF_HEADER, headerName);
+  cookies.set(CSRF_TOKEN, csrfToken);
+}
+
+export function setUserRole(role){
   if(_.isNil(role) || _.isEmpty(role) || !Array.isArray(role)){
     throw "Role is not exist or role must be an array.";
   }

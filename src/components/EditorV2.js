@@ -40,7 +40,7 @@ class BrandEditor extends Component {
       fileName = blobInfo.filename();
     }
 
-    formData.append('file', blobInfo.blob(), fileName);
+    formData.append('files', blobInfo.blob(), fileName);
 
     let req = {
       boardId: this.props.boardId,
@@ -49,11 +49,19 @@ class BrandEditor extends Component {
 
     try {
       let result = await uploadImageApi(req);
-      console.log(result);
+      let location = "";
 
-      // TODO
+      Object.keys(result).map(function (key) {
+        location = result[key].path + result[key].fileName;
+      });
 
-      success();
+      if(location !== ""){
+        success(location);
+      }
+      else{
+        failure("IMAGE LOCATION IS NOT EXIST.");
+      }
+
     }
     catch(e){
       failure("IMAGE UPLOAD FAIL.");

@@ -1,8 +1,12 @@
 import axios from "axios";
 import _ from "lodash";
+import Cookies from 'universal-cookie';
 
 import {getApiServer} from "../../config/index";
 import createCommonRequest from "../utils/createCommonRequest";
+import {CSRF_HEADER, CSRF_TOKEN} from "../../config/userInfo";
+
+const cookies = new Cookies();
 
 export const uploadImageApi = req =>{
   const apiServer = getApiServer();
@@ -17,6 +21,10 @@ export const uploadImageApi = req =>{
 
   let headers = {};
   headers['Content-Type'] = 'multipart/form-data;';
+
+  if(!_.isNil(cookies.get(CSRF_HEADER) && !_.isNil(cookies.get(CSRF_HEADER)))){
+    headers[cookies.get(CSRF_HEADER)] = cookies.get(CSRF_TOKEN);
+  }
 
   if(req.files.values().next().done){
     return ;

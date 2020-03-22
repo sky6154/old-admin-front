@@ -1,7 +1,9 @@
+import _ from "lodash";
+
 import * as actionTypes                       from '../actions/account';
 import createReducer                          from '../utils/createReducer';
 import Alert                                  from 'react-s-alert';
-import {setUserInfo, removeUserInfo} from "../../config/userInfo";
+import {setUserRole, removeUserInfo, setCsrfToken} from "../../config/userInfo";
 
 const initialState = {
   isLoginRequesting    : false,
@@ -22,7 +24,12 @@ const actionHandlers = {
   [actionTypes.LOGIN.SUCCESS]: (state, action) =>{
     const data = action.data;
 
-    setUserInfo(data.authorities);
+    if(!_.isObject(data)){
+      throw "Wrong login response.";
+    }
+
+    setUserRole(data.authorities);
+    setCsrfToken(data.csrfHeader, data.csrfToken);
 
     return Object.assign({}, state, {
       isLoginRequesting: false,
