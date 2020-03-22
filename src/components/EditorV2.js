@@ -107,7 +107,8 @@ class BrandEditor extends Component {
 
             images_reuse_filename: true,
             // file_picker_types: 'image',
-            images_upload_handler: this.handleImageUpload
+            images_upload_handler: this.handleImageUpload,
+            branding : false
           }}
           onChange={this.handleEditorChange}
         />

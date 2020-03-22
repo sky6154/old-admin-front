@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/es/TextField/TextField";
 import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
 
 import {fetchBoardListTrigger} from "../../redux/actions/board";
+import {uploadPostTrigger} from "../../redux/actions/post";
 
 import _ from "lodash";
 
@@ -74,7 +75,14 @@ class PostWrite extends React.Component {
   };
 
   handleSave = (content) => {
-    console.log(content);
+    let req = {
+      title : this.state.title,
+      content : content,
+      author : 'kokj',
+      boardId : this.state.boardId
+    };
+
+    this.props.uploadPostTrigger(req);
   };
 
 
@@ -83,8 +91,6 @@ class PostWrite extends React.Component {
     return (
       <div>
         {boardListDropDown}
-
-        {/*<MyEditor boardId={this.state.boardId}/>*/}
 
         <TextField
           id="standard-full-width"
@@ -97,7 +103,7 @@ class PostWrite extends React.Component {
           variant="outlined"
         />
 
-        <EditorV2 handleSave={this.handleSave} boardId={this.state.boardId} />
+        <EditorV2 handleSave={this.handleSave} boardId={this.state.boardId} isValidate={!(this.state.title === "")} />
       </div>
     );
   }
@@ -123,5 +129,6 @@ function mapStateToProps(state) {
 
 
 export default withRouter(connect(mapStateToProps, {
-  fetchBoardListTrigger
+  fetchBoardListTrigger,
+  uploadPostTrigger
 })(PostWrite));
