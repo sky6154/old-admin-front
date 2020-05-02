@@ -4,4 +4,7 @@ import createActionCreator, {createSagaAction} from '../utils/createActionCreato
 export const FETCH_BOARD_LIST = createActionTypes('FETCH_BOARD_LIST');
 export const fetchBoardList = createSagaAction(FETCH_BOARD_LIST);
 export const FETCH_BOARD_LIST_TRIGGER = 'FETCH_BOARD_LIST_TRIGGER';
-export const fetchBoardListTrigger = (req, requiredFields = []) => createActionCreator(FETCH_BOARD_LIST_TRIGGER, {req, requiredFields});
+export const fetchBoardListTrigger = (req, requiredFields = []) => createActionCreator(FETCH_BOARD_LIST_TRIGGER, {
+    req,
+    requiredFields
+});

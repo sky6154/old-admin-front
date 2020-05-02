@@ -4,8 +4,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import LockIcon from '@material-ui/icons/LockOutlined';
@@ -24,7 +22,7 @@ const styles = theme => ({
         display: 'block', // Fix IE 11 issue.
         marginLeft: theme.spacing(3),
         marginRight: theme.spacing(3),
-        [theme.breakpoints.up(400 + theme.spacing(3*2))]: {
+        [theme.breakpoints.up(400 + theme.spacing(3 * 2))]: {
             width: 400,
             marginLeft: 'auto',
             marginRight: 'auto',
@@ -55,8 +53,8 @@ class Login extends React.Component {
         super(props);
 
         this.state = {
-            isLogin : false,
-            id      : '',
+            isLogin: false,
+            id: '',
             password: ''
         };
 
@@ -64,17 +62,17 @@ class Login extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if(nextProps.isLogin !== prevState.isLogin){
+        if (nextProps.isLogin !== prevState.isLogin) {
             return {
-                isLogin : nextProps.isLogin
+                isLogin: nextProps.isLogin
             }
         }
 
         return null;
     }
 
-    shouldComponentUpdate(nextProps, nextState){
-        if(nextState.isLogin){
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.isLogin) {
             this.props.history.replace("/");
 
             return false;
@@ -83,10 +81,10 @@ class Login extends React.Component {
         return true;
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.setState({
-            isLogin : false,
-            id      : '',
+            isLogin: false,
+            id: '',
             password: ''
         });
     }
@@ -106,7 +104,7 @@ class Login extends React.Component {
         this.props.loginTrigger(req);
     };
 
-    handleKeyPress (e) {
+    handleKeyPress(e) {
         if (e.key === 'Enter') {
             this.handleLogin();
         }
@@ -155,7 +153,7 @@ class Login extends React.Component {
                         </Button>
                     </form>
                 </Paper>
-                <Alert stack={{limit: 3}} />
+                <Alert stack={{limit: 3}}/>
             </main>
         );
     }

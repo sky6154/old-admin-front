@@ -1,7 +1,7 @@
 /* eslint-disable no-constant-condition */
-import { loginApi, logoutApi, authCheckApi, getAdminAllApi } from '../services/account';
+import {authCheckApi, getAdminAllApi, loginApi, logoutApi} from '../services/account';
 import * as actions from '../actions/account';
-import {createIterator, createWatcher, createLoginIterator} from '../utils/createSaga';
+import {createIterator, createLoginIterator, createWatcher} from '../utils/createSaga';
 
 /***************************** Subroutines ************************************/
 const login = createLoginIterator(actions.login, loginApi);
@@ -18,8 +18,8 @@ const watchGetAllAdmin = createWatcher(actions.GET_ALL_ADMIN_TRIGGER, getAllAdmi
 
 
 export default [
-  watchLogin,
-  watchLogout,
-  watchAuthCheck,
-  watchGetAllAdmin
+    watchLogin,
+    watchLogout,
+    watchAuthCheck,
+    watchGetAllAdmin
 ];

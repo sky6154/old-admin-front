@@ -1,7 +1,7 @@
-import React        from 'react';
-import {connect}    from "react-redux";
+import React from 'react';
+import {connect} from "react-redux";
 import {withRouter} from "react-router";
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 
 import {permissionCheck, Role} from "../../config/Role";
 import {changePasswordTrigger} from "../../redux/actions/my";
@@ -30,8 +30,8 @@ class ChangePassword extends React.Component {
         super(props);
 
         this.state = {
-            password : '',
-            confirmPassword : ''
+            password: '',
+            confirmPassword: ''
         };
 
         let requiredRoles = [Role.ROLE_ADMIN, Role.ROLE_BLOG, Role.ROLE_ETC];
@@ -41,22 +41,22 @@ class ChangePassword extends React.Component {
 
     handlePassword = prop => event => {
         this.setState({
-            [prop] : event.target.value
+            [prop]: event.target.value
         });
     };
 
     submit = () => {
         let req = {
-          password : this.state.password
+            password: this.state.password
         };
 
         this.props.changePasswordTrigger(req);
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevProps.isChangePasswordRequest && this.props.isSuccess){
+        if (prevProps.isChangePasswordRequest && this.props.isSuccess) {
             this.setState({
-                password : '',
+                password: '',
                 confirmPassword: ''
             });
         }
@@ -66,7 +66,7 @@ class ChangePassword extends React.Component {
         const {classes} = this.props;
         let helperText = null;
 
-        if(this.state.password !== this.state.confirmPassword){
+        if (this.state.password !== this.state.confirmPassword) {
             helperText = "패스워드가 일치하지 않습니다.";
         }
 
@@ -104,10 +104,10 @@ class ChangePassword extends React.Component {
 }
 
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
     return {
         isChangePasswordRequest: state.my.isChangePasswordRequest,
-        isSuccess : state.my.isSuccess
+        isSuccess: state.my.isSuccess
     };
 }
 

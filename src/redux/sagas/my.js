@@ -1,5 +1,5 @@
 /* eslint-disable no-constant-condition */
-import { changePasswordApi } from '../services/my';
+import {changePasswordApi} from '../services/my';
 import * as actions from '../actions/my';
 import {createIterator, createWatcher} from '../utils/createSaga';
 
