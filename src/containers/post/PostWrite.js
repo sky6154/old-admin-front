@@ -1,5 +1,4 @@
 import React from 'react';
-import EditorV2 from "../../components/EditorV2";
 import {permissionCheck, Role} from "../../config/Role";
 import TextField from "@material-ui/core/es/TextField/TextField";
 import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
@@ -12,13 +11,14 @@ import _ from "lodash";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
 import PropTypes from 'prop-types';
+import BlogEditor from "../../components/BlogEditor";
 
 class PostWrite extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            title: '',
+            title: "",
             boardId: -1
         };
 
@@ -77,7 +77,7 @@ class PostWrite extends React.Component {
         let req = {
             title: this.state.title,
             content: content,
-            author: 'kokj',
+            author: 'develobeer',
             boardId: this.state.boardId
         };
 
@@ -91,19 +91,7 @@ class PostWrite extends React.Component {
             <div>
                 {boardListDropDown}
 
-                <TextField
-                    id="standard-full-width"
-                    label="제목"
-                    placeholder="제목을 입력하세요."
-                    fullWidth
-                    margin="normal"
-                    onChange={this.handleTitle}
-                    value={this.state.title}
-                    variant="outlined"
-                />
-
-                <EditorV2 handleSave={this.handleSave} boardId={this.state.boardId}
-                          isValidate={!(this.state.title === "")}/>
+                <BlogEditor boardId={this.state.boardId} content={this.props.content}/>
             </div>
         );
     }

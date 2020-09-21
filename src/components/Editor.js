@@ -126,14 +126,14 @@ class MyEditor extends React.Component {
         // TODO
         // 현재 공통된 saga 로직을 사용하고 있어서 글쓰기에 맞는 saga 로직으로 변경해야 함
         if (this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc && this.props.step3IsPostUpload) {
-            console.log("STEP 3");
+            // console.log("STEP 3");
             this.props.removeStateTrigger();
             // this.clearContent();
         } else if (this.props.isPostProgress && this.props.step1IsAllImageUploaded && this.props.step2IsDoneReplaceSrc && !this.props.isPostUploading && !this.props.step3IsPostUpload) {
-            console.log("STEP 2");
+            // console.log("STEP 2");
             this.uploadPost();
         } else if (this.props.isPostProgress && this.props.step1IsAllImageUploaded && !this.props.isReplaceSrc && !this.props.step2IsDoneReplaceSrc && !this.props.step3IsPostUpload) {
-            console.log("STEP 1");
+            // console.log("STEP 1");
             this.replaceImages(this.props.imageUploadInfo);
         }
 
@@ -265,7 +265,6 @@ class MyEditor extends React.Component {
     uploadPost = () => {
         let content = stateToHTML(this.state.editorState.getCurrentContent());
         let req;
-
 
         if (this.props.isUpdate) {
             req = {

@@ -1,5 +1,4 @@
 import React from 'react';
-import MyEditor from "../../components/Editor";
 import {permissionCheck, Role} from "../../config/Role";
 import ReactTable from "react-table";
 import TextField from "@material-ui/core/es/TextField/TextField";
@@ -16,6 +15,8 @@ import createMuiTheme from "@material-ui/core/es/styles/createMuiTheme";
 import {red} from '@material-ui/core/colors';
 import {ThemeProvider} from '@material-ui/styles';
 import moment from "moment";
+import EditorV2 from "../../components/EditorV2";
+import BlogEditor from "../../components/BlogEditor";
 
 class PostManage extends React.Component {
     constructor(props) {
@@ -23,7 +24,7 @@ class PostManage extends React.Component {
 
         this.state = {
             boardId: -1,
-            isFirst: true
+            isFirst: true,
         };
 
         let requiredRoles = [Role.ROLE_ADMIN, Role.ROLE_BLOG];
@@ -189,9 +190,7 @@ class PostManage extends React.Component {
                                     </Button>
                                 </ThemeProvider>
 
-                                <MyEditor boardId={this.state.boardId} title={row.original.title}
-                                          content={row.original.content}
-                                          isUpdate={true} seq={row.original.seq}/>
+                                <BlogEditor title={row.original.title} boardId={this.state.boardId} content={row.original.content} seq={row.original.seq} />
                             </div>
                         );
                     }}

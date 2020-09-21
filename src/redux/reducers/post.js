@@ -84,6 +84,12 @@ const actionHandlers = {
         let {postList} = state;
 
         if (!_.isNil(action.req.seq)) { // post update
+            Alert.info("게시글 업데이트 성공", {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 3000
+            });
+
             if (!_.isNil(postList) && !_.isEmpty(postList)) {
                 const index = _.findIndex(postList, {['seq']: result.seq});
 
@@ -97,6 +103,13 @@ const actionHandlers = {
                     });
                 }
             }
+        }
+        else{
+            Alert.info("게시글 생성 성공", {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 3000
+            });
         }
 
         return Object.assign({}, state, {

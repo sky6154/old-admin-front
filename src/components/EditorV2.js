@@ -11,7 +11,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Grid from "@material-ui/core/Grid";
 
 
-class BrandEditor extends Component {
+class EditorV2 extends Component {
 
     constructor(props) {
         super(props);
@@ -67,7 +67,7 @@ class BrandEditor extends Component {
 
     handleSave = () => {
         if (_.isFunction(this.props.handleSave)) {
-            this.props.handleSave(this.state.content);
+            this.props.handleSave(this.state.content, this.props.seq);
         }
     };
 
@@ -147,4 +147,4 @@ class BrandEditor extends Component {
     }
 }
 
-export default BrandEditor;
+export default EditorV2;
