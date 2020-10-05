@@ -50,8 +50,6 @@ node {
                 sh "docker kill -s HUP myNginx"
               }
           }
-
-
         }
         else{
           stage('deploy swarm manager'){
