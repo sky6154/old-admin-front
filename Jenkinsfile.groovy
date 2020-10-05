@@ -22,6 +22,15 @@ node {
         stage('npm build'){
           runBuild()
         }
+
+        stage("docker build with tag") {
+            sh "docker build . -t ${DOCKER_REPO}/${NAME}:${shortRevision}"
+        }
+
+        stage("docker login & image push") {
+            sh "docker login hub.develobeer.blog -u ${params.DOCKER_REPO_USER} -p ${params.DOCKER_REPO_PASS}"
+            sh "docker push ${DOCKER_REPO}/${NAME}:${shortRevision}"
+        }
       
         if("${env.CURRENT_ADMIN_ENV}" == "blue"){
           stage('deploy swarm manager'){
