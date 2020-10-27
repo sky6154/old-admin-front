@@ -29,7 +29,7 @@ const actionHandlers = {
         }
 
         setUserRole(data.authorities);
-        setCsrfToken(data.csrfHeader, data.csrfToken);
+        // setCsrfToken(data.csrfHeader, data.csrfToken);
 
         return Object.assign({}, state, {
             isLoginRequesting: false,

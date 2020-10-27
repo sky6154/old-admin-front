@@ -3,8 +3,8 @@ import _ from "lodash";
 import {Role} from "./Role";
 
 const ROLE_NAME = "develobeer-role";
-export const CSRF_HEADER = "develobeer-csrf-header-name";
-export const CSRF_TOKEN = "develobeer-csrf-token";
+export const CSRF_HEADER = "DEVELOBEER-CSRF-HEADER";
+export const CSRF_TOKEN = "DEVELOBEER-CSRF-TOKEN";
 
 const cookies = new Cookies();
 
