@@ -31,7 +31,7 @@
     "draft-js-undo-plugin": "^2.0.3",
     "draft-js-video-plugin": "^2.0.2",
     "immutability-helper": "^3.0.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "material-ui-dropzone": "^2.4.5",
     "moment": "^2.24.0",
     "npm": "^6.13.7",
